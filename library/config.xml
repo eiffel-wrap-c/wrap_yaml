@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<ewg_config name="libyaml">
+
+  <rule_list>
+    
+	  <!-- Ignore everything that starts with an underscore. -->
+    <rule>
+      <match>
+          <identifier name="_.*"/>  
+      </match>
+       <wrapper type="none">
+      </wrapper>
+    </rule>
+
+	  <!-- Include yaml_parser_* -->
+    <rule>
+       <match>
+           <identifier name="yaml_parser.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule>
+
+	  <!-- Include yaml_event_* -->
+    <rule>
+       <match>
+           <identifier name="yaml_event.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule>
+
+	  <!-- Include yaml_token_* -->
+    <rule>
+       <match>
+           <identifier name="yaml_token.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule>
+
+
+	  <!-- And the rest should be ignored -->
+    <rule>
+      <match>
+      </match>
+       <wrapper type="none">
+      </wrapper>
+    </rule>
+  </rule_list>
+</ewg_config>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="parser" uuid="02A865DE-499C-4379-BCA8-8A70D1216D30">
+	<target name="parser">
+		<root feature="make" class="APPLICATION"/>
+		<file_rule>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
+			<exclude>/CVS$</exclude>
+			<exclude>/EIFGENs$</exclude>
+		</file_rule>
+		<option warning="true">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<setting name="console_application" value="true"/>
+		<library name="base" location="$ISE_LIBRARY/library/base/base.ecf"/>
+		<library name="yaml" location="..\..\library\libyaml.ecf" readonly="false"/>
+		<cluster name="parser" location=".\" recursive="true"/>
+	</target>
+</system>
