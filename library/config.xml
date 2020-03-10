@@ -12,7 +12,7 @@
       </wrapper>
     </rule>
 
-	  <!-- Include yaml_parser_* -->
+    	<!-- Include Yaml parser -->
     <rule>
        <match>
            <identifier name="yaml_parser.*"/>
@@ -21,7 +21,7 @@
       </wrapper>
     </rule>
 
-	  <!-- Include yaml_event_* -->
+	<!--  Include yaml_event_* -->
     <rule>
        <match>
            <identifier name="yaml_event.*"/>
@@ -30,7 +30,7 @@
       </wrapper>
     </rule>
 
-	  <!-- Include yaml_token_* -->
+	<!--  Include yaml_token_* -->
     <rule>
        <match>
            <identifier name="yaml_token.*"/>
@@ -38,6 +38,17 @@
        <wrapper type="default">
       </wrapper>
     </rule>
+
+
+	<!--   Include yaml_document_* -->
+    <rule>
+       <match>
+           <identifier name="yaml_document_.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule> 
+
 
 
 	  <!-- And the rest should be ignored -->

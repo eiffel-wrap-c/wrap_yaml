@@ -14,9 +14,81 @@ feature -- Access
 			c_yaml_token_delete (token.item)
 		end
 
+	yaml_document_start_event_initialize (event: YAML_EVENT_S_STRUCT_API; version_directive: YAML_VERSION_DIRECTIVE_S_STRUCT_API; tag_directives_start: YAML_TAG_DIRECTIVE_S_STRUCT_API; tag_directives_end: YAML_TAG_DIRECTIVE_S_STRUCT_API; implicit: INTEGER): INTEGER 
+		do
+			Result := c_yaml_document_start_event_initialize (event.item, version_directive.item, tag_directives_start.item, tag_directives_end.item, implicit)
+		end
+
+	yaml_document_end_event_initialize (event: YAML_EVENT_S_STRUCT_API; implicit: INTEGER): INTEGER 
+		do
+			Result := c_yaml_document_end_event_initialize (event.item, implicit)
+		end
+
 	yaml_event_delete (event: YAML_EVENT_S_STRUCT_API) 
 		do
 			c_yaml_event_delete (event.item)
+		end
+
+	yaml_document_initialize (document: YAML_DOCUMENT_S_STRUCT_API; version_directive: YAML_VERSION_DIRECTIVE_S_STRUCT_API; tag_directives_start: YAML_TAG_DIRECTIVE_S_STRUCT_API; tag_directives_end: YAML_TAG_DIRECTIVE_S_STRUCT_API; start_implicit: INTEGER; end_implicit: INTEGER): INTEGER 
+		do
+			Result := c_yaml_document_initialize (document.item, version_directive.item, tag_directives_start.item, tag_directives_end.item, start_implicit, end_implicit)
+		end
+
+	yaml_document_delete (document: YAML_DOCUMENT_S_STRUCT_API) 
+		do
+			c_yaml_document_delete (document.item)
+		end
+
+	yaml_document_get_node (document: YAML_DOCUMENT_S_STRUCT_API; index: INTEGER): detachable YAML_NODE_S_STRUCT_API 
+		do
+			if attached c_yaml_document_get_node (document.item, index) as l_ptr and then not l_ptr.is_default_pointer then
+				create Result.make_by_pointer ( l_ptr )
+			end
+
+		end
+
+	yaml_document_get_root_node (document: YAML_DOCUMENT_S_STRUCT_API): detachable YAML_NODE_S_STRUCT_API 
+		do
+			if attached c_yaml_document_get_root_node (document.item) as l_ptr and then not l_ptr.is_default_pointer then
+				create Result.make_by_pointer ( l_ptr )
+			end
+
+		end
+
+	yaml_document_add_scalar (document: YAML_DOCUMENT_S_STRUCT_API; tag: STRING; value: STRING; length: INTEGER; style: INTEGER): INTEGER 
+		local
+			tag_c_string: C_STRING
+			value_c_string: C_STRING
+		do
+			create tag_c_string.make (tag)
+			create value_c_string.make (value)
+			Result := c_yaml_document_add_scalar (document.item, tag_c_string.item, value_c_string.item, length, style)
+		end
+
+	yaml_document_add_sequence (document: YAML_DOCUMENT_S_STRUCT_API; tag: STRING; style: INTEGER): INTEGER 
+		local
+			tag_c_string: C_STRING
+		do
+			create tag_c_string.make (tag)
+			Result := c_yaml_document_add_sequence (document.item, tag_c_string.item, style)
+		end
+
+	yaml_document_add_mapping (document: YAML_DOCUMENT_S_STRUCT_API; tag: STRING; style: INTEGER): INTEGER 
+		local
+			tag_c_string: C_STRING
+		do
+			create tag_c_string.make (tag)
+			Result := c_yaml_document_add_mapping (document.item, tag_c_string.item, style)
+		end
+
+	yaml_document_append_sequence_item (document: YAML_DOCUMENT_S_STRUCT_API; sequence: INTEGER; item: INTEGER): INTEGER 
+		do
+			Result := c_yaml_document_append_sequence_item (document.item, sequence, item)
+		end
+
+	yaml_document_append_mapping_pair (document: YAML_DOCUMENT_S_STRUCT_API; mapping: INTEGER; key: INTEGER; value: INTEGER): INTEGER 
+		do
+			Result := c_yaml_document_append_mapping_pair (document.item, mapping, key, value)
 		end
 
 	yaml_parser_initialize (parser: YAML_PARSER_S_STRUCT_API): INTEGER 
@@ -78,12 +150,111 @@ feature -- Externals
 			]"
 		end
 
+	c_yaml_document_start_event_initialize (event: POINTER; version_directive: POINTER; tag_directives_start: POINTER; tag_directives_end: POINTER; implicit: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_document_start_event_initialize ((yaml_event_t*)$event, (yaml_version_directive_t*)$version_directive, (yaml_tag_directive_t*)$tag_directives_start, (yaml_tag_directive_t*)$tag_directives_end, (int)$implicit);
+			]"
+		end
+
+	c_yaml_document_end_event_initialize (event: POINTER; implicit: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_document_end_event_initialize ((yaml_event_t*)$event, (int)$implicit);
+			]"
+		end
+
 	c_yaml_event_delete (event: POINTER)
 		external
 			"C inline use <yaml.h>"
 		alias
 			"[
 				yaml_event_delete ((yaml_event_t*)$event);
+			]"
+		end
+
+	c_yaml_document_initialize (document: POINTER; version_directive: POINTER; tag_directives_start: POINTER; tag_directives_end: POINTER; start_implicit: INTEGER; end_implicit: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_document_initialize ((yaml_document_t*)$document, (yaml_version_directive_t*)$version_directive, (yaml_tag_directive_t*)$tag_directives_start, (yaml_tag_directive_t*)$tag_directives_end, (int)$start_implicit, (int)$end_implicit);
+			]"
+		end
+
+	c_yaml_document_delete (document: POINTER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_document_delete ((yaml_document_t*)$document);
+			]"
+		end
+
+	c_yaml_document_get_node (document: POINTER; index: INTEGER): POINTER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_document_get_node ((yaml_document_t*)$document, (int)$index);
+			]"
+		end
+
+	c_yaml_document_get_root_node (document: POINTER): POINTER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_document_get_root_node ((yaml_document_t*)$document);
+			]"
+		end
+
+	c_yaml_document_add_scalar (document: POINTER; tag: POINTER; value: POINTER; length: INTEGER; style: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_document_add_scalar ((yaml_document_t*)$document, (yaml_char_t*)$tag, (yaml_char_t*)$value, (int)$length, (yaml_scalar_style_t)$style);
+			]"
+		end
+
+	c_yaml_document_add_sequence (document: POINTER; tag: POINTER; style: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_document_add_sequence ((yaml_document_t*)$document, (yaml_char_t*)$tag, (yaml_sequence_style_t)$style);
+			]"
+		end
+
+	c_yaml_document_add_mapping (document: POINTER; tag: POINTER; style: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_document_add_mapping ((yaml_document_t*)$document, (yaml_char_t*)$tag, (yaml_mapping_style_t)$style);
+			]"
+		end
+
+	c_yaml_document_append_sequence_item (document: POINTER; sequence: INTEGER; item: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_document_append_sequence_item ((yaml_document_t*)$document, (int)$sequence, (int)$item);
+			]"
+		end
+
+	c_yaml_document_append_mapping_pair (document: POINTER; mapping: INTEGER; key: INTEGER; value: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_document_append_mapping_pair ((yaml_document_t*)$document, (int)$mapping, (int)$key, (int)$value);
 			]"
 		end
 

@@ -44,4 +44,5 @@ Work in progress
 
 * [Yaml Parser](examples/parser)   `Shows how to use the Parser event API`.
 * [Yaml Scanner](examples/scanner)  `Shows how to use the Parser scan token API`.
+* [Yaml Loader](examples/loader)  `Shows how to use load Yaml documents.`.
 

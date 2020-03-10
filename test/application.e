@@ -7,12 +7,15 @@ feature {NONE} -- Initialization
 
 	make
 		do
-			print ("%N Parse from file")
-			parse_yaml_from_file
-			print ("%N Parse from String")
-			parse_yaml_from_string
-			print ("%N Scan from file")
-			scan_yaml_from_file
+--			print ("%N Parse from file")
+--			parse_yaml_from_file
+--			print ("%N Parse from String")
+--			parse_yaml_from_string
+--			print ("%N Scan from file")
+--			scan_yaml_from_file
+			print ("%N Load from file")
+			load_yaml_from_file
+
 		end
 
 
@@ -92,6 +95,53 @@ feature {NONE} -- Initialization
 			end
 
 			print ("%NNumber of Tokens: " + count.out)
+			yaml.yaml_parser_delete (l_parser)
+			file.close
+		end
+
+	load_yaml_from_file
+		local
+			file: FILE
+			l_parser: YAML_PARSER_S_STRUCT_API
+			l_document: YAML_DOCUMENT_S_STRUCT_API
+			done: BOOLEAN
+			l_exception: EXCEPTION
+			count: INTEGER
+		do
+			create {RAW_FILE} file.make_open_read ("anchors.yaml")
+
+			create l_parser.make
+			check
+				yaml_initialization: yaml.yaml_parser_initialize (l_parser) = 1
+			end
+
+			yaml.yaml_parser_set_input_file (l_parser, file)
+
+			from
+				create l_document.make
+			until
+				done
+			loop
+				if yaml.yaml_parser_load (l_parser, l_document) = 0 then
+					create l_exception
+					l_exception.set_description ("Parse error")
+					l_exception.raise
+				end
+				if attached {YAML_NODE_S_STRUCT_API} yaml.yaml_document_get_root_node (l_document) as l_node then
+					if (create {YAML_NODE_TYPE_E_ENUM_API}).is_valid_enum (l_node.type) then
+						print ("%N Valid Node Type")
+						done := True
+					else
+						create l_exception
+						l_exception.set_description ("Get documet root error")
+						l_exception.raise
+					end
+				end
+				yaml.yaml_document_delete (l_document)
+				count := count + 1
+			end
+
+			print ("%NNumber of Documents: " + count.out)
 			yaml.yaml_parser_delete (l_parser)
 			file.close
 		end

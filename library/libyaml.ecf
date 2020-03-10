@@ -9,7 +9,7 @@
 		<setting name="inlining_size" value="0"/>
 		<setting name="msil_classes_per_module" value="5"/>
 		<setting name="dead_code_removal" value="feature"/>
-		<external_include location="/usr/local/include/tensorflow/c">
+		<external_include location="/usr/local/include">
 			<condition>
 				<platform excluded_value="windows"/>
 			</condition>
