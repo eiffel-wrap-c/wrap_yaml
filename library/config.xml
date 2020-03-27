@@ -12,6 +12,17 @@
       </wrapper>
     </rule>
 
+
+    	<!-- Include Yaml get version -->
+    <rule>
+       <match>
+           <identifier name="yaml_get_version.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule>
+
+
     	<!-- Include Yaml parser -->
     <rule>
        <match>
@@ -49,8 +60,62 @@
       </wrapper>
     </rule> 
 
+	<!--   Include yaml_emitter_* -->
+    <rule>
+       <match>
+           <identifier name="yaml_emitter_.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule> 
+
+	<!--   Include yaml_stream_* -->
+    <rule>
+       <match>
+           <identifier name="yaml_stream_.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule> 
+
+	<!--   Include yaml_alias_* -->
+    <rule>
+       <match>
+           <identifier name="yaml_alias_.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule> 
+
+	<!--   Include yaml_scalar_* -->
+    <rule>
+       <match>
+           <identifier name="yaml_scalar_.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule> 
+
+	<!--   Include yaml_sequence_* -->
+    <rule>
+       <match>
+           <identifier name="yaml_sequence_.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule> 
+
+	<!--   Include yaml_mapping_* -->
+    <rule>
+       <match>
+           <identifier name="yaml_mapping_.*"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule> 
 
 
+ 
 	  <!-- And the rest should be ignored -->
     <rule>
       <match>

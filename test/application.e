@@ -7,17 +7,28 @@ feature {NONE} -- Initialization
 
 	make
 		do
+			print ("%N Yaml Version")
+			yaml_version
 --			print ("%N Parse from file")
 --			parse_yaml_from_file
 --			print ("%N Parse from String")
 --			parse_yaml_from_string
 --			print ("%N Scan from file")
 --			scan_yaml_from_file
-			print ("%N Load from file")
-			load_yaml_from_file
+--			print ("%N Load from file")
+--			load_yaml_from_file
 
 		end
 
+	yaml_version
+		local
+			l_ptr: POINTER
+		do
+			l_ptr := yaml.yaml_get_version_string
+			if l_ptr /= default_pointer then
+				print ("Yaml version:" + (create {STRING}.make_from_c (l_ptr)))
+			end
+		end
 
 	parse_yaml_from_file
 		local

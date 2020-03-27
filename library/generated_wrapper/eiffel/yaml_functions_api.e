@@ -9,9 +9,33 @@ class YAML_FUNCTIONS_API
 
 feature -- Access
 
+	yaml_get_version_string: POINTER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_get_version_string ();
+			]"
+		end
+
+	yaml_get_version (major: POINTER; minor: POINTER; patch: POINTER) 
+		do
+			c_yaml_get_version (major, minor, patch)
+		end
+
 	yaml_token_delete (token: YAML_TOKEN_S_STRUCT_API) 
 		do
 			c_yaml_token_delete (token.item)
+		end
+
+	yaml_stream_start_event_initialize (event: YAML_EVENT_S_STRUCT_API; encoding: INTEGER): INTEGER 
+		do
+			Result := c_yaml_stream_start_event_initialize (event.item, encoding)
+		end
+
+	yaml_stream_end_event_initialize (event: YAML_EVENT_S_STRUCT_API): INTEGER 
+		do
+			Result := c_yaml_stream_end_event_initialize (event.item)
 		end
 
 	yaml_document_start_event_initialize (event: YAML_EVENT_S_STRUCT_API; version_directive: YAML_VERSION_DIRECTIVE_S_STRUCT_API; tag_directives_start: YAML_TAG_DIRECTIVE_S_STRUCT_API; tag_directives_end: YAML_TAG_DIRECTIVE_S_STRUCT_API; implicit: INTEGER): INTEGER 
@@ -22,6 +46,56 @@ feature -- Access
 	yaml_document_end_event_initialize (event: YAML_EVENT_S_STRUCT_API; implicit: INTEGER): INTEGER 
 		do
 			Result := c_yaml_document_end_event_initialize (event.item, implicit)
+		end
+
+	yaml_alias_event_initialize (event: YAML_EVENT_S_STRUCT_API; anchor: STRING): INTEGER 
+		local
+			anchor_c_string: C_STRING
+		do
+			create anchor_c_string.make (anchor)
+			Result := c_yaml_alias_event_initialize (event.item, anchor_c_string.item)
+		end
+
+	yaml_scalar_event_initialize (event: YAML_EVENT_S_STRUCT_API; anchor: STRING; tag: STRING; value: STRING; length: INTEGER; plain_implicit: INTEGER; quoted_implicit: INTEGER; style: INTEGER): INTEGER 
+		local
+			anchor_c_string: C_STRING
+			tag_c_string: C_STRING
+			value_c_string: C_STRING
+		do
+			create anchor_c_string.make (anchor)
+			create tag_c_string.make (tag)
+			create value_c_string.make (value)
+			Result := c_yaml_scalar_event_initialize (event.item, anchor_c_string.item, tag_c_string.item, value_c_string.item, length, plain_implicit, quoted_implicit, style)
+		end
+
+	yaml_sequence_start_event_initialize (event: YAML_EVENT_S_STRUCT_API; anchor: STRING; tag: STRING; implicit: INTEGER; style: INTEGER): INTEGER 
+		local
+			anchor_c_string: C_STRING
+			tag_c_string: C_STRING
+		do
+			create anchor_c_string.make (anchor)
+			create tag_c_string.make (tag)
+			Result := c_yaml_sequence_start_event_initialize (event.item, anchor_c_string.item, tag_c_string.item, implicit, style)
+		end
+
+	yaml_sequence_end_event_initialize (event: YAML_EVENT_S_STRUCT_API): INTEGER 
+		do
+			Result := c_yaml_sequence_end_event_initialize (event.item)
+		end
+
+	yaml_mapping_start_event_initialize (event: YAML_EVENT_S_STRUCT_API; anchor: STRING; tag: STRING; implicit: INTEGER; style: INTEGER): INTEGER 
+		local
+			anchor_c_string: C_STRING
+			tag_c_string: C_STRING
+		do
+			create anchor_c_string.make (anchor)
+			create tag_c_string.make (tag)
+			Result := c_yaml_mapping_start_event_initialize (event.item, anchor_c_string.item, tag_c_string.item, implicit, style)
+		end
+
+	yaml_mapping_end_event_initialize (event: YAML_EVENT_S_STRUCT_API): INTEGER 
+		do
+			Result := c_yaml_mapping_end_event_initialize (event.item)
 		end
 
 	yaml_event_delete (event: YAML_EVENT_S_STRUCT_API) 
@@ -139,7 +213,99 @@ feature -- Access
 			Result := c_yaml_parser_load (parser.item, document.item)
 		end
 
+	yaml_emitter_initialize (emitter: YAML_EMITTER_S_STRUCT_API): INTEGER 
+		do
+			Result := c_yaml_emitter_initialize (emitter.item)
+		end
+
+	yaml_emitter_delete (emitter: YAML_EMITTER_S_STRUCT_API) 
+		do
+			c_yaml_emitter_delete (emitter.item)
+		end
+
+	yaml_emitter_set_output_string (emitter: YAML_EMITTER_S_STRUCT_API; output: STRING; size: INTEGER; size_written: POINTER) 
+		local
+			output_c_string: C_STRING
+		do
+			create output_c_string.make (output)
+			c_yaml_emitter_set_output_string (emitter.item, output_c_string.item, size, size_written)
+		end
+
+	yaml_emitter_set_output_file (emitter: YAML_EMITTER_S_STRUCT_API; file: IO_FILE_STRUCT_API) 
+		do
+			c_yaml_emitter_set_output_file (emitter.item, file.item)
+		end
+
+	yaml_emitter_set_output (emitter: YAML_EMITTER_S_STRUCT_API; handler: POINTER; data: POINTER) 
+		do
+			c_yaml_emitter_set_output (emitter.item, handler, data)
+		end
+
+	yaml_emitter_set_encoding (emitter: YAML_EMITTER_S_STRUCT_API; encoding: INTEGER) 
+		do
+			c_yaml_emitter_set_encoding (emitter.item, encoding)
+		end
+
+	yaml_emitter_set_canonical (emitter: YAML_EMITTER_S_STRUCT_API; canonical: INTEGER) 
+		do
+			c_yaml_emitter_set_canonical (emitter.item, canonical)
+		end
+
+	yaml_emitter_set_indent (emitter: YAML_EMITTER_S_STRUCT_API; indent: INTEGER) 
+		do
+			c_yaml_emitter_set_indent (emitter.item, indent)
+		end
+
+	yaml_emitter_set_width (emitter: YAML_EMITTER_S_STRUCT_API; width: INTEGER) 
+		do
+			c_yaml_emitter_set_width (emitter.item, width)
+		end
+
+	yaml_emitter_set_unicode (emitter: YAML_EMITTER_S_STRUCT_API; unicode: INTEGER) 
+		do
+			c_yaml_emitter_set_unicode (emitter.item, unicode)
+		end
+
+	yaml_emitter_set_break (emitter: YAML_EMITTER_S_STRUCT_API; line_break: INTEGER) 
+		do
+			c_yaml_emitter_set_break (emitter.item, line_break)
+		end
+
+	yaml_emitter_emit (emitter: YAML_EMITTER_S_STRUCT_API; event: YAML_EVENT_S_STRUCT_API): INTEGER 
+		do
+			Result := c_yaml_emitter_emit (emitter.item, event.item)
+		end
+
+	yaml_emitter_open (emitter: YAML_EMITTER_S_STRUCT_API): INTEGER 
+		do
+			Result := c_yaml_emitter_open (emitter.item)
+		end
+
+	yaml_emitter_close (emitter: YAML_EMITTER_S_STRUCT_API): INTEGER 
+		do
+			Result := c_yaml_emitter_close (emitter.item)
+		end
+
+	yaml_emitter_dump (emitter: YAML_EMITTER_S_STRUCT_API; document: YAML_DOCUMENT_S_STRUCT_API): INTEGER 
+		do
+			Result := c_yaml_emitter_dump (emitter.item, document.item)
+		end
+
+	yaml_emitter_flush (emitter: YAML_EMITTER_S_STRUCT_API): INTEGER 
+		do
+			Result := c_yaml_emitter_flush (emitter.item)
+		end
+
 feature -- Externals
+
+	c_yaml_get_version (major: POINTER; minor: POINTER; patch: POINTER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_get_version ((int*)$major, (int*)$minor, (int*)$patch);
+			]"
+		end
 
 	c_yaml_token_delete (token: POINTER)
 		external
@@ -147,6 +313,24 @@ feature -- Externals
 		alias
 			"[
 				yaml_token_delete ((yaml_token_t*)$token);
+			]"
+		end
+
+	c_yaml_stream_start_event_initialize (event: POINTER; encoding: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_stream_start_event_initialize ((yaml_event_t*)$event, (yaml_encoding_t)$encoding);
+			]"
+		end
+
+	c_yaml_stream_end_event_initialize (event: POINTER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_stream_end_event_initialize ((yaml_event_t*)$event);
 			]"
 		end
 
@@ -165,6 +349,60 @@ feature -- Externals
 		alias
 			"[
 				return yaml_document_end_event_initialize ((yaml_event_t*)$event, (int)$implicit);
+			]"
+		end
+
+	c_yaml_alias_event_initialize (event: POINTER; anchor: POINTER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_alias_event_initialize ((yaml_event_t*)$event, (yaml_char_t*)$anchor);
+			]"
+		end
+
+	c_yaml_scalar_event_initialize (event: POINTER; anchor: POINTER; tag: POINTER; value: POINTER; length: INTEGER; plain_implicit: INTEGER; quoted_implicit: INTEGER; style: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_scalar_event_initialize ((yaml_event_t*)$event, (yaml_char_t*)$anchor, (yaml_char_t*)$tag, (yaml_char_t*)$value, (int)$length, (int)$plain_implicit, (int)$quoted_implicit, (yaml_scalar_style_t)$style);
+			]"
+		end
+
+	c_yaml_sequence_start_event_initialize (event: POINTER; anchor: POINTER; tag: POINTER; implicit: INTEGER; style: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_sequence_start_event_initialize ((yaml_event_t*)$event, (yaml_char_t*)$anchor, (yaml_char_t*)$tag, (int)$implicit, (yaml_sequence_style_t)$style);
+			]"
+		end
+
+	c_yaml_sequence_end_event_initialize (event: POINTER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_sequence_end_event_initialize ((yaml_event_t*)$event);
+			]"
+		end
+
+	c_yaml_mapping_start_event_initialize (event: POINTER; anchor: POINTER; tag: POINTER; implicit: INTEGER; style: INTEGER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_mapping_start_event_initialize ((yaml_event_t*)$event, (yaml_char_t*)$anchor, (yaml_char_t*)$tag, (int)$implicit, (yaml_mapping_style_t)$style);
+			]"
+		end
+
+	c_yaml_mapping_end_event_initialize (event: POINTER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_mapping_end_event_initialize ((yaml_event_t*)$event);
 			]"
 		end
 
@@ -336,6 +574,150 @@ feature -- Externals
 		alias
 			"[
 				return yaml_parser_load ((yaml_parser_t*)$parser, (yaml_document_t*)$document);
+			]"
+		end
+
+	c_yaml_emitter_initialize (emitter: POINTER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_emitter_initialize ((yaml_emitter_t*)$emitter);
+			]"
+		end
+
+	c_yaml_emitter_delete (emitter: POINTER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_emitter_delete ((yaml_emitter_t*)$emitter);
+			]"
+		end
+
+	c_yaml_emitter_set_output_string (emitter: POINTER; output: POINTER; size: INTEGER; size_written: POINTER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_emitter_set_output_string ((yaml_emitter_t*)$emitter, (unsigned char*)$output, (size_t)$size, (size_t*)$size_written);
+			]"
+		end
+
+	c_yaml_emitter_set_output_file (emitter: POINTER; file: POINTER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_emitter_set_output_file ((yaml_emitter_t*)$emitter, (FILE*)$file);
+			]"
+		end
+
+	c_yaml_emitter_set_output (emitter: POINTER; handler: POINTER; data: POINTER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_emitter_set_output ((yaml_emitter_t*)$emitter, (yaml_write_handler_t*)$handler, (void*)$data);
+			]"
+		end
+
+	c_yaml_emitter_set_encoding (emitter: POINTER; encoding: INTEGER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_emitter_set_encoding ((yaml_emitter_t*)$emitter, (yaml_encoding_t)$encoding);
+			]"
+		end
+
+	c_yaml_emitter_set_canonical (emitter: POINTER; canonical: INTEGER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_emitter_set_canonical ((yaml_emitter_t*)$emitter, (int)$canonical);
+			]"
+		end
+
+	c_yaml_emitter_set_indent (emitter: POINTER; indent: INTEGER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_emitter_set_indent ((yaml_emitter_t*)$emitter, (int)$indent);
+			]"
+		end
+
+	c_yaml_emitter_set_width (emitter: POINTER; width: INTEGER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_emitter_set_width ((yaml_emitter_t*)$emitter, (int)$width);
+			]"
+		end
+
+	c_yaml_emitter_set_unicode (emitter: POINTER; unicode: INTEGER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_emitter_set_unicode ((yaml_emitter_t*)$emitter, (int)$unicode);
+			]"
+		end
+
+	c_yaml_emitter_set_break (emitter: POINTER; line_break: INTEGER)
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				yaml_emitter_set_break ((yaml_emitter_t*)$emitter, (yaml_break_t)$line_break);
+			]"
+		end
+
+	c_yaml_emitter_emit (emitter: POINTER; event: POINTER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_emitter_emit ((yaml_emitter_t*)$emitter, (yaml_event_t*)$event);
+			]"
+		end
+
+	c_yaml_emitter_open (emitter: POINTER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_emitter_open ((yaml_emitter_t*)$emitter);
+			]"
+		end
+
+	c_yaml_emitter_close (emitter: POINTER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_emitter_close ((yaml_emitter_t*)$emitter);
+			]"
+		end
+
+	c_yaml_emitter_dump (emitter: POINTER; document: POINTER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_emitter_dump ((yaml_emitter_t*)$emitter, (yaml_document_t*)$document);
+			]"
+		end
+
+	c_yaml_emitter_flush (emitter: POINTER): INTEGER
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				return yaml_emitter_flush ((yaml_emitter_t*)$emitter);
 			]"
 		end
 
