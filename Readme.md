@@ -34,6 +34,11 @@ If you checked out the LibYAML source code from the GitHub repository, you can b
 	$ make
 	# make install
 	
+### Windows
+
+Using vcpkg (https://github.com/microsoft/vcpkg) tool, you can install libyaml library
+
+	vcpkg install libyaml:x64-windows
 
 ## Status
 
