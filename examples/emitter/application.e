@@ -3,8 +3,7 @@ note
 			yaml Emitter example Eiffel version. 
 			For original C version, please see:
 			https://github.com/yaml/libyaml/blob/master/tests/run-emitter.c
-						 
-			This demo show how to use the Emitter API.
+
 
 	]"
 	date: "$Date$"

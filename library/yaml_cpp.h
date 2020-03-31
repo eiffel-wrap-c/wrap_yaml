@@ -1,11 +1,11 @@
-# 1 "/usr/local/include/yaml.h"
+# 1 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 # 1 "<built-in>"
 # 1 "<command-line>"
 # 31 "<command-line>"
 # 1 "/usr/include/stdc-predef.h" 1 3 4
 # 32 "<command-line>" 2
-# 1 "/usr/local/include/yaml.h"
-# 18 "/usr/local/include/yaml.h"
+# 1 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
+# 18 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 # 1 "/usr/include/stdlib.h" 1 3 4
 # 25 "/usr/include/stdlib.h" 3 4
 # 1 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h" 1 3 4
@@ -1241,7 +1241,7 @@ extern int getloadavg (double __loadavg[], int __nelem)
 # 1011 "/usr/include/stdlib.h" 2 3 4
 # 1020 "/usr/include/stdlib.h" 3 4
 
-# 19 "/usr/local/include/yaml.h" 2
+# 19 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h" 2
 # 1 "/usr/include/stdio.h" 1 3 4
 # 27 "/usr/include/stdio.h" 3 4
 # 1 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h" 1 3 4
@@ -1801,7 +1801,7 @@ extern int __uflow (FILE *);
 extern int __overflow (FILE *, int);
 # 873 "/usr/include/stdio.h" 3 4
 
-# 20 "/usr/local/include/yaml.h" 2
+# 20 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h" 2
 # 1 "/usr/include/string.h" 1 3 4
 # 26 "/usr/include/string.h" 3 4
 # 1 "/usr/include/x86_64-linux-gnu/bits/libc-header-start.h" 1 3 4
@@ -2081,16 +2081,16 @@ extern char *stpncpy (char *__restrict __dest,
      __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (1, 2)));
 # 498 "/usr/include/string.h" 3 4
 
-# 21 "/usr/local/include/yaml.h" 2
-# 58 "/usr/local/include/yaml.h"
+# 21 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h" 2
+# 58 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 
-# 58 "/usr/local/include/yaml.h"
+# 58 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 const char *
 yaml_get_version_string(void);
-# 69 "/usr/local/include/yaml.h"
+# 69 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_get_version(int *major, int *minor, int *patch);
-# 80 "/usr/local/include/yaml.h"
+# 80 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 typedef unsigned char yaml_char_t;
 
 
@@ -2168,7 +2168,7 @@ typedef struct yaml_mark_s {
 
     size_t column;
 } yaml_mark_t;
-# 166 "/usr/local/include/yaml.h"
+# 166 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 typedef enum yaml_scalar_style_e {
 
     YAML_ANY_SCALAR_STYLE,
@@ -2209,7 +2209,7 @@ typedef enum yaml_mapping_style_e {
     YAML_FLOW_MAPPING_STYLE
 
 } yaml_mapping_style_t;
-# 215 "/usr/local/include/yaml.h"
+# 215 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 typedef enum yaml_token_type_e {
 
     YAML_NO_TOKEN,
@@ -2332,16 +2332,10 @@ typedef struct yaml_token_s {
     yaml_mark_t end_mark;
 
 } yaml_token_t;
-
-
-
-
-
-
-
+# 347 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_token_delete(yaml_token_t *token);
-# 355 "/usr/local/include/yaml.h"
+# 358 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 typedef enum yaml_event_type_e {
 
     YAML_NO_EVENT,
@@ -2466,47 +2460,47 @@ typedef struct yaml_event_s {
     yaml_mark_t end_mark;
 
 } yaml_event_t;
-# 489 "/usr/local/include/yaml.h"
+# 492 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_stream_start_event_initialize(yaml_event_t *event,
         yaml_encoding_t encoding);
-# 501 "/usr/local/include/yaml.h"
+# 504 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_stream_end_event_initialize(yaml_event_t *event);
-# 523 "/usr/local/include/yaml.h"
+# 526 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_document_start_event_initialize(yaml_event_t *event,
         yaml_version_directive_t *version_directive,
         yaml_tag_directive_t *tag_directives_start,
         yaml_tag_directive_t *tag_directives_end,
         int implicit);
-# 542 "/usr/local/include/yaml.h"
+# 545 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_document_end_event_initialize(yaml_event_t *event, int implicit);
-# 554 "/usr/local/include/yaml.h"
+# 557 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_alias_event_initialize(yaml_event_t *event, yaml_char_t *anchor);
-# 579 "/usr/local/include/yaml.h"
+# 582 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_scalar_event_initialize(yaml_event_t *event,
         yaml_char_t *anchor, yaml_char_t *tag,
         yaml_char_t *value, int length,
         int plain_implicit, int quoted_implicit,
         yaml_scalar_style_t style);
-# 602 "/usr/local/include/yaml.h"
+# 605 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_sequence_start_event_initialize(yaml_event_t *event,
         yaml_char_t *anchor, yaml_char_t *tag, int implicit,
         yaml_sequence_style_t style);
-# 615 "/usr/local/include/yaml.h"
+# 618 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_sequence_end_event_initialize(yaml_event_t *event);
-# 634 "/usr/local/include/yaml.h"
+# 637 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_mapping_start_event_initialize(yaml_event_t *event,
         yaml_char_t *anchor, yaml_char_t *tag, int implicit,
         yaml_mapping_style_t style);
-# 647 "/usr/local/include/yaml.h"
+# 650 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_mapping_end_event_initialize(yaml_event_t *event);
 
@@ -2518,7 +2512,7 @@ yaml_mapping_end_event_initialize(yaml_event_t *event);
 
 void
 yaml_event_delete(yaml_event_t *event);
-# 692 "/usr/local/include/yaml.h"
+# 695 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 typedef enum yaml_node_type_e {
 
     YAML_NO_NODE,
@@ -2641,7 +2635,7 @@ typedef struct yaml_document_s {
     yaml_mark_t end_mark;
 
 } yaml_document_t;
-# 833 "/usr/local/include/yaml.h"
+# 836 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_document_initialize(yaml_document_t *document,
         yaml_version_directive_t *version_directive,
@@ -2657,34 +2651,34 @@ yaml_document_initialize(yaml_document_t *document,
 
 void
 yaml_document_delete(yaml_document_t *document);
-# 861 "/usr/local/include/yaml.h"
+# 864 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 yaml_node_t *
 yaml_document_get_node(yaml_document_t *document, int index);
-# 880 "/usr/local/include/yaml.h"
+# 883 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 yaml_node_t *
 yaml_document_get_root_node(yaml_document_t *document);
-# 897 "/usr/local/include/yaml.h"
+# 900 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_document_add_scalar(yaml_document_t *document,
         yaml_char_t *tag, yaml_char_t *value, int length,
         yaml_scalar_style_t style);
-# 914 "/usr/local/include/yaml.h"
+# 917 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_document_add_sequence(yaml_document_t *document,
         yaml_char_t *tag, yaml_sequence_style_t style);
-# 930 "/usr/local/include/yaml.h"
+# 933 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_document_add_mapping(yaml_document_t *document,
         yaml_char_t *tag, yaml_mapping_style_t style);
-# 944 "/usr/local/include/yaml.h"
+# 947 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_document_append_sequence_item(yaml_document_t *document,
         int sequence, int item);
-# 959 "/usr/local/include/yaml.h"
+# 962 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_document_append_mapping_pair(yaml_document_t *document,
         int mapping, int key, int value);
-# 988 "/usr/local/include/yaml.h"
+# 991 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 typedef int yaml_read_handler_t(void *data, unsigned char *buffer, size_t size,
         size_t *size_read);
 
@@ -2772,7 +2766,7 @@ typedef struct yaml_alias_data_s {
 
     yaml_mark_t mark;
 } yaml_alias_data_t;
-# 1083 "/usr/local/include/yaml.h"
+# 1086 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 typedef struct yaml_parser_s {
 
 
@@ -2794,7 +2788,7 @@ typedef struct yaml_parser_s {
     const char *context;
 
     yaml_mark_t context_mark;
-# 1115 "/usr/local/include/yaml.h"
+# 1118 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
     yaml_read_handler_t *read_handler;
 
 
@@ -2854,7 +2848,7 @@ typedef struct yaml_parser_s {
 
 
     yaml_mark_t mark;
-# 1185 "/usr/local/include/yaml.h"
+# 1188 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
     int stream_start_produced;
 
 
@@ -2906,7 +2900,7 @@ typedef struct yaml_parser_s {
 
         yaml_simple_key_t *top;
     } simple_keys;
-# 1247 "/usr/local/include/yaml.h"
+# 1250 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
     struct {
 
         yaml_parser_state_t *start;
@@ -2938,7 +2932,7 @@ typedef struct yaml_parser_s {
 
         yaml_tag_directive_t *top;
     } tag_directives;
-# 1289 "/usr/local/include/yaml.h"
+# 1292 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
     struct {
 
         yaml_alias_data_t *start;
@@ -2956,7 +2950,7 @@ typedef struct yaml_parser_s {
 
 
 } yaml_parser_t;
-# 1318 "/usr/local/include/yaml.h"
+# 1321 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_parser_initialize(yaml_parser_t *parser);
 
@@ -2968,30 +2962,30 @@ yaml_parser_initialize(yaml_parser_t *parser);
 
 void
 yaml_parser_delete(yaml_parser_t *parser);
-# 1342 "/usr/local/include/yaml.h"
+# 1345 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_parser_set_input_string(yaml_parser_t *parser,
         const unsigned char *input, size_t size);
-# 1356 "/usr/local/include/yaml.h"
+# 1359 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_parser_set_input_file(yaml_parser_t *parser, FILE *file);
-# 1368 "/usr/local/include/yaml.h"
+# 1371 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_parser_set_input(yaml_parser_t *parser,
         yaml_read_handler_t *handler, void *data);
-# 1379 "/usr/local/include/yaml.h"
+# 1382 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_parser_set_encoding(yaml_parser_t *parser, yaml_encoding_t encoding);
-# 1403 "/usr/local/include/yaml.h"
+# 1406 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_parser_scan(yaml_parser_t *parser, yaml_token_t *token);
-# 1427 "/usr/local/include/yaml.h"
+# 1430 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_parser_parse(yaml_parser_t *parser, yaml_event_t *event);
-# 1452 "/usr/local/include/yaml.h"
+# 1455 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_parser_load(yaml_parser_t *parser, yaml_document_t *document);
-# 1478 "/usr/local/include/yaml.h"
+# 1481 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 typedef int yaml_write_handler_t(void *data, unsigned char *buffer, size_t size);
 
 
@@ -3045,7 +3039,7 @@ typedef struct yaml_anchors_s {
 
     int serialized;
 } yaml_anchors_t;
-# 1539 "/usr/local/include/yaml.h"
+# 1542 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 typedef struct yaml_emitter_s {
 
 
@@ -3057,7 +3051,7 @@ typedef struct yaml_emitter_s {
     yaml_error_type_t error;
 
     const char *problem;
-# 1561 "/usr/local/include/yaml.h"
+# 1564 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
     yaml_write_handler_t *write_handler;
 
 
@@ -3105,7 +3099,7 @@ typedef struct yaml_emitter_s {
 
 
     yaml_encoding_t encoding;
-# 1619 "/usr/local/include/yaml.h"
+# 1622 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
     int canonical;
 
     int best_indent;
@@ -3228,7 +3222,7 @@ typedef struct yaml_emitter_s {
 
         yaml_scalar_style_t style;
     } scalar_data;
-# 1752 "/usr/local/include/yaml.h"
+# 1755 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
     int opened;
 
     int closed;
@@ -3247,7 +3241,7 @@ typedef struct yaml_emitter_s {
 
 
 } yaml_emitter_t;
-# 1782 "/usr/local/include/yaml.h"
+# 1785 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_emitter_initialize(yaml_emitter_t *emitter);
 
@@ -3259,47 +3253,47 @@ yaml_emitter_initialize(yaml_emitter_t *emitter);
 
 void
 yaml_emitter_delete(yaml_emitter_t *emitter);
-# 1809 "/usr/local/include/yaml.h"
+# 1812 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_emitter_set_output_string(yaml_emitter_t *emitter,
         unsigned char *output, size_t size, size_t *size_written);
-# 1823 "/usr/local/include/yaml.h"
+# 1826 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_emitter_set_output_file(yaml_emitter_t *emitter, FILE *file);
-# 1835 "/usr/local/include/yaml.h"
+# 1838 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_emitter_set_output(yaml_emitter_t *emitter,
         yaml_write_handler_t *handler, void *data);
-# 1846 "/usr/local/include/yaml.h"
+# 1849 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_emitter_set_encoding(yaml_emitter_t *emitter, yaml_encoding_t encoding);
-# 1857 "/usr/local/include/yaml.h"
+# 1860 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_emitter_set_canonical(yaml_emitter_t *emitter, int canonical);
-# 1867 "/usr/local/include/yaml.h"
+# 1870 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_emitter_set_indent(yaml_emitter_t *emitter, int indent);
-# 1877 "/usr/local/include/yaml.h"
+# 1880 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_emitter_set_width(yaml_emitter_t *emitter, int width);
-# 1887 "/usr/local/include/yaml.h"
+# 1890 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_emitter_set_unicode(yaml_emitter_t *emitter, int unicode);
-# 1897 "/usr/local/include/yaml.h"
+# 1900 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 void
 yaml_emitter_set_break(yaml_emitter_t *emitter, yaml_break_t line_break);
-# 1914 "/usr/local/include/yaml.h"
+# 1917 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_emitter_emit(yaml_emitter_t *emitter, yaml_event_t *event);
-# 1927 "/usr/local/include/yaml.h"
+# 1930 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_emitter_open(yaml_emitter_t *emitter);
-# 1940 "/usr/local/include/yaml.h"
+# 1943 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_emitter_close(yaml_emitter_t *emitter);
-# 1957 "/usr/local/include/yaml.h"
+# 1960 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_emitter_dump(yaml_emitter_t *emitter, yaml_document_t *document);
-# 1968 "/usr/local/include/yaml.h"
+# 1971 "/home/eiffel/dev/Eiffel/wrap_yaml/library/C/include/yaml.h"
 int
 yaml_emitter_flush(yaml_emitter_t *emitter);

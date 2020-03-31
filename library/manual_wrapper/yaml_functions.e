@@ -11,13 +11,16 @@ inherit
 
 	YAML_FUNCTIONS_API
 		rename
-			yaml_parser_set_input_file as yaml_parser_set_input_file_api,
 			yaml_parser_set_input_string as yaml_parser_set_input_string_api,
 			yaml_document_start_event_initialize as yaml_document_start_event_initialize_api,
 			yaml_scalar_event_initialize as yaml_scalar_event_initialize_api,
 			yaml_sequence_start_event_initialize as yaml_sequence_start_event_initialize_api,
 			yaml_mapping_start_event_initialize as yaml_mapping_start_event_initialize_api,
-			yaml_emitter_set_output_string as yaml_emitter_set_output_string_api
+			yaml_emitter_set_output_string as yaml_emitter_set_output_string_api,
+			yaml_document_initialize as yaml_document_initialize_api,
+			yaml_document_add_scalar as yaml_document_add_scalar_api,
+			yaml_document_add_sequence as yaml_document_add_sequence_api,
+			yaml_document_add_mapping as yaml_document_add_mapping_api
 		end
 
 feature -- Access
@@ -101,6 +104,64 @@ feature -- Access
 		do
 			c_yaml_emitter_set_output_string (emitter.item, output.area.base_address, size, size_written)
 		end
+
+
+	yaml_document_initialize (document: YAML_DOCUMENT_S_STRUCT_API; version_directive: detachable YAML_VERSION_DIRECTIVE_S_STRUCT_API; tag_directives_start: detachable YAML_TAG_DIRECTIVE_S_STRUCT_API; tag_directives_end: detachable YAML_TAG_DIRECTIVE_S_STRUCT_API; start_implicit: INTEGER; end_implicit: INTEGER): INTEGER
+		local
+			l_vd: POINTER
+			l_ts: POINTER
+			l_te: POINTER
+		do
+			if attached version_directive then
+				l_vd := version_directive.item
+			end
+			if attached tag_directives_start then
+				l_ts := tag_directives_start.item
+			end
+			if attached tag_directives_end then
+				l_te := tag_directives_end.item
+			end
+			Result := c_yaml_document_initialize (document.item, l_vd, l_ts, l_te, start_implicit, end_implicit)
+		end
+
+
+	yaml_document_add_scalar (document: YAML_DOCUMENT_S_STRUCT_API; tag: detachable STRING; value: detachable STRING; length: INTEGER; style: INTEGER): INTEGER
+		local
+			l_tag: POINTER
+			l_value: POINTER
+		do
+			if attached tag then
+				l_tag := tag.area.base_address
+			end
+			if attached value then
+				l_value := value.area.base_address
+			end
+			Result := c_yaml_document_add_scalar (document.item, l_tag, l_value, length, style)
+		end
+
+
+	yaml_document_add_sequence (document: YAML_DOCUMENT_S_STRUCT_API; tag: detachable STRING; style: INTEGER): INTEGER
+		local
+			l_tag: POINTER
+		do
+			if attached tag then
+				l_tag := tag.area.base_address
+			end
+			Result := c_yaml_document_add_sequence (document.item, l_tag, style)
+		end
+
+
+	yaml_document_add_mapping (document: YAML_DOCUMENT_S_STRUCT_API; tag: detachable STRING; style: INTEGER): INTEGER
+		local
+			l_tag: POINTER
+		do
+			if attached tag then
+				l_tag := tag.area.base_address
+			end
+			Result := c_yaml_document_add_mapping (document.item, l_tag, style)
+		end
+
+
 
 
 end

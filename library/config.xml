@@ -6,12 +6,11 @@
 	  <!-- Ignore everything that starts with an underscore. -->
     <rule>
       <match>
-          <identifier name="_.*"/>  
+          <identifier name="_IO.*"/>  
       </match>
        <wrapper type="none">
       </wrapper>
     </rule>
-
 
     	<!-- Include Yaml get version -->
     <rule>
@@ -49,6 +48,19 @@
        <wrapper type="default">
       </wrapper>
     </rule>
+
+
+
+	<!--  Include struct yaml_node_pair_s -->
+    <rule>
+       <match>
+           <identifier name="yaml_node_pair_s"/>
+           <type name="struct"/>
+       </match>
+       <wrapper type="default">
+      </wrapper>
+    </rule>
+
 
 
 	<!--   Include yaml_document_* -->

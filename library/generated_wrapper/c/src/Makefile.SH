@@ -29,7 +29,7 @@ $spitshell >>Makefile <<'!NO!SUBS!'
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
-OBJECTS = ewg_libyaml_callback_c_glue_code.o
+OBJECTS = ewg_libyaml_callback_c_glue_code.o 
 
 eif_libyaml.a: $(OBJECTS)
 	mkdir -p ../../../C/spec/$(PLATFORM)/lib

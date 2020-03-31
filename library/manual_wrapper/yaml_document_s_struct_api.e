@@ -10,7 +10,7 @@ inherit
 
 	MEMORY_STRUCTURE
 
-	
+
 create
 
 	make,
@@ -18,14 +18,14 @@ create
 
 feature -- Measurement
 
-	structure_size: INTEGER 
+	structure_size: INTEGER
 		do
 			Result := sizeof_external
 		end
 
 feature {ANY} -- Member Access
 
-	version_directive: detachable YAML_VERSION_DIRECTIVE_S_STRUCT_API 
+	version_directive: detachable YAML_VERSION_DIRECTIVE_S_STRUCT_API
 			-- Access member `version_directive`
 		require
 			exists: exists
@@ -34,11 +34,11 @@ feature {ANY} -- Member Access
 				create Result.make_by_pointer (l_ptr)
 			end
 		ensure
-			result_void: Result = Void implies c_version_directive (item) = default_pointer 
-			result_not_void: attached Result as l_result implies l_result.item = c_version_directive (item) 
+			result_void: Result = Void implies c_version_directive (item) = default_pointer
+			result_not_void: attached Result as l_result implies l_result.item = c_version_directive (item)
 		end
 
-	set_version_directive (a_value: YAML_VERSION_DIRECTIVE_S_STRUCT_API) 
+	set_version_directive (a_value: YAML_VERSION_DIRECTIVE_S_STRUCT_API)
 			-- Set member `version_directive`
 		require
 			a_value_not_void: a_value /= Void
@@ -59,7 +59,7 @@ feature {ANY} -- Member Access
 			result_correct: Result = c_start_implicit (item)
 		end
 
-	set_start_implicit (a_value: INTEGER) 
+	set_start_implicit (a_value: INTEGER)
 			-- Change the value of member `start_implicit` to `a_value`.
 		require
 			exists: exists
@@ -79,7 +79,7 @@ feature {ANY} -- Member Access
 			result_correct: Result = c_end_implicit (item)
 		end
 
-	set_end_implicit (a_value: INTEGER) 
+	set_end_implicit (a_value: INTEGER)
 			-- Change the value of member `end_implicit` to `a_value`.
 		require
 			exists: exists
@@ -89,13 +89,12 @@ feature {ANY} -- Member Access
 			end_implicit_set: a_value = end_implicit
 		end
 
-	start_mark: POINTER
+	start_mark: YAML_MARK_S_STRUCT_API
 			-- Access member `start_mark`
 		require
 			exists: exists
 		do
-			Result := c_start_mark (item) 
-		ensure
+			create Result.make_by_pointer (c_start_mark (item))
 		end
 
 	set_start_mark (a_value: POINTER )
@@ -106,15 +105,15 @@ feature {ANY} -- Member Access
 		do
 			set_c_start_mark (item, a_value)
 		ensure
-			start_mark_set: start_mark = a_value 		end
+			start_mark_set: start_mark = a_value
+		end
 
-	end_mark: POINTER
+	end_mark: YAML_MARK_S_STRUCT_API
 			-- Access member `end_mark`
 		require
 			exists: exists
 		do
-			Result := c_end_mark (item) 
-		ensure
+			create Result.make_by_pointer (c_end_mark (item))
 		end
 
 	set_end_mark (a_value: POINTER )
@@ -125,11 +124,71 @@ feature {ANY} -- Member Access
 		do
 			set_c_end_mark (item, a_value)
 		ensure
-			end_mark_set: end_mark = a_value 		end
+			end_mark_set: end_mark = a_value
+		end
+
+--feature -- Document: Nodes
+
+--	nodes_start: detachable YAML_NODE_S_STRUCT_API
+--			-- The beginning of the stack
+--		local
+--			l_ptr: POINTER
+--		do
+--			l_ptr := c_nodes_start (item)
+--			if l_ptr /= default_pointer then
+--				create Result.make_by_pointer (item)
+--			end
+--		end
+
+--	nodes_end: detachable YAML_NODE_S_STRUCT_API
+--			-- The end of the stack
+--		local
+--			l_ptr: POINTER
+--		do
+--			l_ptr := c_nodes_end (item)
+--			if l_ptr /= default_pointer then
+--				create Result.make_by_pointer (item)
+--			end
+--		end
+
+--	nodes_top: detachable YAML_NODE_S_STRUCT_API
+--			-- The top of the stack
+--		local
+--			l_ptr: POINTER
+--		do
+--			l_ptr := c_nodes_top (item)
+--			if l_ptr /= default_pointer then
+--				create Result.make_by_pointer (item)
+--			end
+--		end
+
+
+feature -- List of tag directives
+
+	tag_directives_start: detachable YAML_TAG_DIRECTIVE_S_STRUCT_API
+		local
+			l_ptr: POINTER
+		do
+			l_ptr := c_tag_directives_start (item)
+			if l_ptr /= default_pointer then
+				create Result.make_by_pointer (l_ptr)
+			end
+		end
+
+	tag_directives_end: detachable YAML_TAG_DIRECTIVE_S_STRUCT_API
+		local
+			l_ptr: POINTER
+		do
+			l_ptr := c_tag_directives_end (item)
+			if l_ptr /= default_pointer then
+				create Result.make_by_pointer (l_ptr)
+			end
+		end
+
 
 feature {NONE} -- Implementation wrapper for struct struct yaml_document_s
 
-	sizeof_external: INTEGER 
+	sizeof_external: INTEGER
 		external
 			"C inline use <yaml.h>"
 		alias
@@ -147,7 +206,7 @@ feature {NONE} -- Implementation wrapper for struct struct yaml_document_s
 			]"
 		end
 
-	set_c_version_directive (an_item: POINTER; a_value: POINTER) 
+	set_c_version_directive (an_item: POINTER; a_value: POINTER)
 		require
 			an_item_not_null: an_item /= default_pointer
 		external
@@ -171,7 +230,7 @@ feature {NONE} -- Implementation wrapper for struct struct yaml_document_s
 			]"
 		end
 
-	set_c_start_implicit (an_item: POINTER; a_value: INTEGER) 
+	set_c_start_implicit (an_item: POINTER; a_value: INTEGER)
 		require
 			an_item_not_null: an_item /= default_pointer
 		external
@@ -195,7 +254,7 @@ feature {NONE} -- Implementation wrapper for struct struct yaml_document_s
 			]"
 		end
 
-	set_c_end_implicit (an_item: POINTER; a_value: INTEGER) 
+	set_c_end_implicit (an_item: POINTER; a_value: INTEGER)
 		require
 			an_item_not_null: an_item /= default_pointer
 		external
@@ -219,7 +278,7 @@ feature {NONE} -- Implementation wrapper for struct struct yaml_document_s
 			]"
 		end
 
-	set_c_start_mark (an_item: POINTER; a_value: POINTER) 
+	set_c_start_mark (an_item: POINTER; a_value: POINTER)
 		require
 			an_item_not_null: an_item /= default_pointer
 		external
@@ -241,7 +300,7 @@ feature {NONE} -- Implementation wrapper for struct struct yaml_document_s
 			]"
 		end
 
-	set_c_end_mark (an_item: POINTER; a_value: POINTER) 
+	set_c_end_mark (an_item: POINTER; a_value: POINTER)
 		require
 			an_item_not_null: an_item /= default_pointer
 		external
@@ -252,4 +311,58 @@ feature {NONE} -- Implementation wrapper for struct struct yaml_document_s
 			]"
 		end
 
+	c_nodes_start (an_item: POINTER): POINTER
+		require
+			an_item_not_null: an_item /= default_pointer
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				((struct yaml_document_s*)$an_item)->nodes.start
+			]"
+		end
+
+	c_nodes_end (an_item: POINTER): POINTER
+		require
+			an_item_not_null: an_item /= default_pointer
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				((struct yaml_document_s*)$an_item)->nodes.end
+			]"
+		end
+
+	c_nodes_top (an_item: POINTER): POINTER
+		require
+			an_item_not_null: an_item /= default_pointer
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				((struct yaml_document_s*)$an_item)->nodes.top
+			]"
+		end
+
+	c_tag_directives_start (an_item: POINTER): POINTER
+		require
+			an_item_not_null: an_item /= default_pointer
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				((struct yaml_document_s*)$an_item)->tag_directives.start
+			]"
+		end
+
+	c_tag_directives_end (an_item: POINTER): POINTER
+		require
+			an_item_not_null: an_item /= default_pointer
+		external
+			"C inline use <yaml.h>"
+		alias
+			"[
+				((struct yaml_document_s*)$an_item)->tag_directives.end
+			]"
+		end
 end
