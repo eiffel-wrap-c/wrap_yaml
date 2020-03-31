@@ -19,6 +19,11 @@
 				<platform excluded_value="windows"/>
 			</condition>
 		</external_include>
+		<external_include location="$ECF_CONFIG_PATH/C/include">
+			<condition>
+				<platform value="windows"/>
+			</condition>
+		</external_include>
 		<external_object location="$ECF_CONFIG_PATH/C/spec/$ISE_C_COMPILER/$ISE_PLATFORM/lib/eif_libyaml.lib">
 			<condition>
 				<platform value="windows"/>
@@ -32,6 +37,11 @@
 		<external_object location="/usr/local/lib/libyaml.so">
 			<condition>
 				<platform excluded_value="windows"/>
+			</condition>
+		</external_object>
+		<external_object location="$ECF_CONFIG_PATH/C/lib/yaml.lib">
+			<condition>
+				<platform value="windows"/>
 			</condition>
 		</external_object>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>

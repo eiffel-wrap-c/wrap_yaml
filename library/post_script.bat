@@ -7,6 +7,7 @@ del /f yaml_token_s_struct_api.e
 del /f yaml_functions_api.e 
 del /f yaml_document_s_struct_api.e 
 del /f yaml_node_s_struct_api.e
+del /f iobuf_struct_api.e
 cd ..
 cd ..
 
