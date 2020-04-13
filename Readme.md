@@ -33,7 +33,19 @@ If you checked out the LibYAML source code from the GitHub repository, you can b
 	$ ./configure
 	$ make
 	# make install
+
+At the moment we use the convention that `libyaml` will be installed at
+
+	/usr/local/lib/libyaml.so
 	
+### Windows
+
+Using vcpkg (https://github.com/microsoft/vcpkg) tool, you can install libyaml library
+
+	vcpkg install libyaml:x64-windows
+	
+Then copy the files `yaml.dll` and `yaml.lib` to `%LIBRARY_PATH%wrap_library/library/C/include/lib`
+Where `%LIBRARY_PATH%` is where you clone/download `wrap_yaml` source code.
 
 ## Status
 

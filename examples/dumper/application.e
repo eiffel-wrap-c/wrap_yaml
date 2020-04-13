@@ -60,7 +60,6 @@ feature {NONE} -- Initialization
 			file: FILE
 			l_parser: YAML_PARSER_S_STRUCT_API
 			l_emitter:  YAML_EMITTER_S_STRUCT_API
-			l_event: YAML_EVENT_S_STRUCT_API
 			l_document: YAML_DOCUMENT_S_STRUCT_API
 			buffer: STRING
 			documents: ARRAY [YAML_DOCUMENT_S_STRUCT_API]
@@ -196,7 +195,6 @@ feature {NONE} -- Initialization
 			pair: YAML_NODE_PAIR_S_STRUCT_API
 			item: POINTER --  An element of a sequence node.
 			error: BOOLEAN
-			l_next: POINTER
 			i: INTEGER
 			node_start: INTEGER
 			count: INTEGER
@@ -294,8 +292,6 @@ feature {NONE} -- Initialization
 			count: INTEGER
 			l_directive_1: YAML_TAG_DIRECTIVE_S_STRUCT_API
 			l_directive_2: YAML_TAG_DIRECTIVE_S_STRUCT_API
-			node: YAML_NODE_S_STRUCT_API
-			i: INTEGER
 		do
 			if (attached document_1.version_directive as version_directive_1 and then
 				attached document_2.version_directive as version_directive_2 and then
@@ -352,7 +348,6 @@ feature {NONE} -- Initialization
 		local
 			node_1: YAML_NODE_S_STRUCT_API
 			node_2: YAML_NODE_S_STRUCT_API
-			i: INTEGER
 			l_level : INTEGER
 			item1: POINTER
 			item2: POINTER
