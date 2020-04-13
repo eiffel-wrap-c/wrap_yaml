@@ -3,8 +3,6 @@ note
 			yaml Emitter example Eiffel version. 
 			For original C version, please see:
 			https://github.com/yaml/libyaml/blob/master/tests/run-emitter.c
-
-
 	]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -49,10 +47,10 @@ feature {NONE} -- Initialization
 					i := i + 1
 		    		count := count + 1
 		    	end
-		    	print ("%NNumber of Documents: " + count.out)
+		    	print ("%NNumber of Documents: " + count.out + "%N")
 		    else
             	print ("%NError: Missing files%N")
-            	print ("Usage: emitter [--c] [--u] %"PATH/file.yaml PATH/file2.yaml%", ...")
+            	print ("Usage: emitter [--c] [--u] %"PATH/file.yaml PATH/file2.yaml%", ...%N")
             	error := True
             end
  		end
@@ -67,14 +65,14 @@ feature {NONE} -- Initialization
 			buffer: STRING
 			events: ARRAY [YAML_EVENT_S_STRUCT_API]
 			res, done: BOOLEAN
-			l_exception: EXCEPTION
 			written: INTEGER
 			event_number: INTEGER
 			count: INTEGER
 		do
-			create {RAW_FILE} file.make_open_read (a_fn)
+			create {RAW_FILE} file.make_with_name (a_fn)
 
 			if file.exists then
+				file.open_read
 				create buffer.make_filled ('%U', buffer_size + 1)
 				create events.make_filled (create {YAML_EVENT_S_STRUCT_API}.make, 1, max_events )
 				across events as ic loop
@@ -82,15 +80,17 @@ feature {NONE} -- Initialization
 				end
 				create l_emitter.make
 				create l_parser.make
-				print ("%N Parsing, emitting, and parsing again: " + a_fn)
-				check
-					yaml_initialization: yaml.yaml_parser_initialize (l_parser) = 1
+				print ("Parsing, emitting, and parsing again: " + a_fn + "%N")
+				if	yaml.yaml_parser_initialize (l_parser) = 0 then
+					print ("Error initializing parser object%N")
+					{EXCEPTIONS}.die (1)
 				end
 
 				yaml.yaml_parser_set_input_file (l_parser, file)
 
-				check
-					emiter_initialization: yaml.yaml_emitter_initialize (l_emitter) = 1
+				if  yaml.yaml_emitter_initialize (l_emitter) = 0 then
+					print ("Error initializing emiter object%N")
+					{EXCEPTIONS}.die (1)
 				end
 
 				if is_canonical then
@@ -107,46 +107,60 @@ feature {NONE} -- Initialization
 					done
 				loop
 					if yaml.yaml_parser_parse (l_parser, l_event) = 0 then
-							create l_exception
-							l_exception.set_description ("Parse error")
-							l_exception.raise
+						print ("Parse error%N")
+						{EXCEPTIONS}.die (1)
 					end
 					done := l_event.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_STREAM_END_EVENT
-					check
-						event_valid: event_number < max_events
+
+					if event_number >= max_events then
+						print ("event_number is greater or equal to max_events%N")
+						{EXCEPTIONS}.die (1)
 					end
-					check
-						success_copy: copy_event (events[event_number + 1], l_event) = 1
+					if copy_event (events[event_number + 1], l_event) /= 1 then
+						print ("Error copy event%N")
+						{EXCEPTIONS}.die (1)
 					end
 					event_number := event_number + 1
-					check
-						emitter: if yaml.yaml_emitter_emit (l_emitter, l_event) = 1 then True else print_out (a_fn, buffer, written, count) end
+					if yaml.yaml_emitter_emit (l_emitter, l_event) /= 1 then
+						print_out (a_fn, buffer, written, count)
+						{EXCEPTIONS}.die (1)
 					end
-
 					count := count + 1
 				end
 
 				yaml.yaml_parser_delete (l_parser)
-				file.close
+
+				--file.close  --Here raise a segfault on finalized mode.
+
 				yaml.yaml_emitter_delete (l_emitter)
 
 				--
 				count := 0
 				done := False
-				check
-					yaml_initialization: yaml.yaml_parser_initialize (l_parser) = 1
+				if  yaml.yaml_parser_initialize (l_parser) = 0 then
+					print ("Error initializing parser object%N")
+					{EXCEPTIONS}.die (1)
 				end
+
+
+				if  yaml.yaml_emitter_initialize (l_emitter) = 0 then
+					print ("Error initializing emiter object%N")
+					{EXCEPTIONS}.die (1)
+				end
+
 				yaml.yaml_parser_set_input_string(l_parser, buffer.substring (1, written));
 				from
+					create l_event.make
 				until
 					done
 				loop
 					if yaml.yaml_parser_parse (l_parser, l_event) = 0 then
-						res := print_out(a_fn, buffer.substring (1, written), written, count);
+						print_out(a_fn, buffer.substring (1, written), written, count);
 					end
 					done := l_event.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_STREAM_END_EVENT
-					check
-						compare_events (events [count + 1], l_event) = True
+					if compare_events (events [count + 1], l_event) /= True then
+						print ("Error compare_events%N")
+						{EXCEPTIONS}.die (1)
 					end
 					yaml.yaml_event_delete(l_event);
 					count := count + 1
@@ -155,10 +169,9 @@ feature {NONE} -- Initialization
 					yaml.yaml_event_delete(ic.item);
 				end
 				print("%NPASSED (length: "+ written.out +")%N")
-    		    check print_out(a_fn, buffer.substring (1, written), written, -1) = True end
-
+    		    print_out(a_fn, buffer.substring (1, written), written, -1)
 			else
-				print ("%NError file [" + a_fn + "] does not  exisit")
+				print ("%NError file [" + a_fn + "] does not  exisit%N")
 			end
 		end
 
@@ -382,14 +395,13 @@ feature {NONE} -- Initialization
 			end
 		end
 
-	print_out (a_fn: STRING; a_buffer: STRING; size: INTEGER; count: INTEGER): BOOLEAN
+	print_out (a_fn: STRING; a_buffer: STRING; size: INTEGER; count: INTEGER)
 		local
 			file: FILE
 			data: STRING
 			data_size: INTEGER
 			total_size: INTEGER
 		do
-			Result := True
 			data_size := 1
 			create {RAW_FILE} file.make_open_read (a_fn)
 			if file.exists then
@@ -420,6 +432,7 @@ feature {NONE} -- Initialization
 	is_unicode: BOOLEAN
 
 	BUFFER_SIZE: INTEGER = 65536
+
     MAX_EVENTS : INTEGER = 1024
 
 feature {NONE} -- Implementation

@@ -6,7 +6,6 @@ note
 						 
 			This demo show how to use the Parser API, parsing an input stream 
 			and retrieving the next YAML document.
-
 	]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -40,28 +39,29 @@ feature {NONE} -- Initialization
 					i := i + 1
 		    		count := count + 1
 		    	end
-		    	print ("%NNumber of Documents: " + count.out)
+		    	print ("Number of Documents: " + count.out +"%N")
 		    else
             	print ("%NError: Missing files%N")
-            	print ("Usage: parse %"PATH/file.yaml PATH/file2.yaml%", ...")
+            	print ("Usage: loader %"PATH/file.yaml PATH/file2.yaml%", ...+%N")
             	error := True
             end
  		end
- 		
+
  	load_yaml (a_fn: STRING)
 		local
 			file: FILE
 			l_parser: YAML_PARSER_S_STRUCT_API
 			l_document: YAML_DOCUMENT_S_STRUCT_API
 			done: BOOLEAN
-			l_exception: EXCEPTION
 		do
-			create {RAW_FILE} file.make_open_read (a_fn)
+			create {RAW_FILE} file.make_with_name (a_fn)
 
 			if file.exists then
+				file.open_read
 				create l_parser.make
-				check
-					yaml_initialization: yaml.yaml_parser_initialize (l_parser) = 1
+				if	yaml.yaml_parser_initialize (l_parser) = 0 then
+					print ("Error initializing parser object%N")
+					{EXCEPTIONS}.die (1)
 				end
 
 				yaml.yaml_parser_set_input_file (l_parser, file)
@@ -72,18 +72,16 @@ feature {NONE} -- Initialization
 					done
 				loop
 					if yaml.yaml_parser_load (l_parser, l_document) = 0 then
-						create l_exception
-						l_exception.set_description ("Parse error")
-						l_exception.raise
+						print ("Parse error%N")
+						{EXCEPTIONS}.die (1)
 					end
 					if attached {YAML_NODE_S_STRUCT_API} yaml.yaml_document_get_root_node (l_document) as l_node then
 						if (create {YAML_NODE_TYPE_E_ENUM_API}).is_valid_enum (l_node.type) then
-							print ("%N Valid Node Type")
+							print ("Valid Node Type%N")
 							done := True
 						else
-							create l_exception
-							l_exception.set_description ("Get document root error")
-							l_exception.raise
+							print  ("Get document root error%N")
+							{EXCEPTIONS}.die (1)
 						end
 					end
 					yaml.yaml_document_delete (l_document)
@@ -91,7 +89,7 @@ feature {NONE} -- Initialization
 				yaml.yaml_parser_delete (l_parser)
 				file.close
 			else
-				print ("%NError file [" + a_fn + "] does not  exisit")
+				print ("Error file [" + a_fn + "] does not  exisit %N")
 			end
 		end
 

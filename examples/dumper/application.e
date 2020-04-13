@@ -3,8 +3,6 @@ note
 			yaml Dumper example Eiffel version. 
 			For original C version, please see:
 			https://github.com/yaml/libyaml/blob/master/tests/run-dumper.c
-						 
-
 	]"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -49,10 +47,10 @@ feature {NONE} -- Initialization
 					i := i + 1
 		    		count := count + 1
 		    	end
-		    	print ("%NNumber of Documents: " + count.out)
+		    	print ("Number of Documents: " + count.out +"%N")
 		    else
             	print ("%NError: Missing files%N")
-            	print ("Usage: emitter [--c] [--u] %"PATH/file.yaml PATH/file2.yaml%", ...")
+            	print ("Usage: dumper [--c] [--u] %"PATH/file.yaml PATH/file2.yaml%", ...+%N")
             	error := True
             end
  		end
@@ -73,9 +71,10 @@ feature {NONE} -- Initialization
 			count: INTEGER
 			aux_doc: YAML_DOCUMENT_S_STRUCT_API
 		do
-			create {RAW_FILE} file.make_open_read (a_fn)
+			create {RAW_FILE} file.make_with_name (a_fn)
 
 			if file.exists then
+				file.open_read
 				create buffer.make_filled ('%U', buffer_size + 1)
 				create documents.make_filled (create {YAML_DOCUMENT_S_STRUCT_API}.make, 1, MAX_DOCUMENTS )
 				across documents as ic loop
@@ -83,15 +82,17 @@ feature {NONE} -- Initialization
 				end
 				create l_emitter.make
 				create l_parser.make
-				print ("%N Loading, dumping, and loading again: " + a_fn)
-				check
-					yaml_initialization: yaml.yaml_parser_initialize (l_parser) = 1
+				print ("%N Loading, dumping, and loading again: " + a_fn + "%N")
+				if yaml.yaml_parser_initialize (l_parser) = 0 then
+					print ("Error initializing parse object%N")
+					{EXCEPTIONS}.die (1)
 				end
 
 				yaml.yaml_parser_set_input_file (l_parser, file)
 
-				check
-					emiter_initialization: yaml.yaml_emitter_initialize (l_emitter) = 1
+				if yaml.yaml_emitter_initialize (l_emitter) = 0 then
+					print ("Error initializing emitter object%N")
+					{EXCEPTIONS}.die (1)
 				end
 
 				if is_canonical then
@@ -102,59 +103,77 @@ feature {NONE} -- Initialization
 				end
 				yaml.yaml_emitter_set_output_string (l_emitter, buffer, Buffer_size, $written)
 
-				check
-					yaml_emitter_open: yaml.yaml_emitter_open (l_emitter) = 1
+				if yaml.yaml_emitter_open (l_emitter) = 0 then
+					print ("Error initializing emitter object%N")
+					{EXCEPTIONS}.die (1)
 				end
+
+
 				from
 					create l_document.make
 				until
 					done
 				loop
 					if yaml.yaml_parser_load (l_parser, l_document) = 0 then
-							create l_exception
-							l_exception.set_description ("Load error")
-							l_exception.raise
+						print ("Load error%N")
+						{EXCEPTIONS}.die (1)
 					end
 					create aux_doc.make_by_pointer (l_document.item)
 					done := not (attached yaml.yaml_document_get_root_node (l_document))
+
 					if not done then
-						check
-							document_number < MAX_DOCUMENTS
+						if document_number >= MAX_DOCUMENTS then
+							print ("Document number greater than MAX_DOCUMENTS%N")
+							{EXCEPTIONS}.die (1)
 						end
-						check
-							copy_document (documents [document_number + 1], l_document) = 1
+						if copy_document (documents [document_number + 1], l_document) /= 1 then
+							print ("Error copy document%N")
+							{EXCEPTIONS}.die (1)
 						end
-						check	yaml.yaml_emitter_dump (l_emitter, l_document) = 1 or else ( yaml.yaml_emitter_flush (l_emitter) = 1 and print_out (a_fn, buffer, written, count)) end
+						if yaml.yaml_emitter_dump (l_emitter, l_document) /= 1 then
+							if yaml.yaml_emitter_flush (l_emitter) /= 1 then
+								print ("Error flushing the accumulated characters to the output.t%N")
+							else
+								print_out (a_fn, buffer, written, count)
+							end
+						end
 					else
 						yaml.yaml_document_delete (l_document)
 					end
-
+					document_number := document_number + 1
 					count := count + 1
 				end
 
 				yaml.yaml_parser_delete (l_parser)
-				file.close
-				check yaml.yaml_emitter_close (l_emitter) = 1 end
+
+				-- file.close Here raise a segfault on finalized mode.
+
+				if yaml.yaml_emitter_close (l_emitter) = 0 then
+					print ("Error closing emittert%N")
+					{EXCEPTIONS}.die (1)
+				end
 				yaml.yaml_emitter_delete (l_emitter)
 
-				--
 				count := 0
 				done := False
-				check
-					yaml_initialization: yaml.yaml_parser_initialize (l_parser) = 1
+				if yaml.yaml_parser_initialize (l_parser) /= 1 then
+					print ("Error Initializaint the parser object%N")
+					{EXCEPTIONS}.die (1)
 				end
 				yaml.yaml_parser_set_input_string(l_parser, buffer.substring (1, written));
 				from
+					create l_document.make
 				until
 					done
 				loop
 					if yaml.yaml_parser_load (l_parser, l_document) = 0  then
-						res := print_out(a_fn, buffer.substring (1, written), written, count)
+						print_out(a_fn, buffer.substring (1, written), written, count)
+						{EXCEPTIONS}.die (1)
 					end
 					done := not (attached yaml.yaml_document_get_root_node(l_document))
 					if not done then
-						check
-							compare_documents (documents [count + 1], l_document) = True or else print_out (a_fn, buffer.substring (1, written), written, count)
+						if compare_documents (documents [count + 1], l_document) = False then
+							print_out (a_fn, buffer.substring (1, written), written, count)
 						end
 					end
 					yaml.yaml_document_delete(l_document);
@@ -164,10 +183,9 @@ feature {NONE} -- Initialization
 					yaml.yaml_document_delete(ic.item);
 				end
 				print("%NPASSED (length: "+ written.out +")%N")
-    		    check print_out(a_fn, buffer.substring (1, written), written, -1) = True end
-
-			else
-				print ("%NError file [" + a_fn + "] does not  exisit")
+    		    print_out(a_fn, buffer.substring (1, written), written, -1)
+   			else
+				print ("%NError file [" + a_fn + "] does not  exisit%N")
 			end
 		end
 
@@ -429,14 +447,13 @@ feature {NONE} -- Initialization
 		end
 
 
-	print_out (a_fn: STRING; a_buffer: STRING; size: INTEGER; count: INTEGER): BOOLEAN
+	print_out (a_fn: STRING; a_buffer: STRING; size: INTEGER; count: INTEGER)
 		local
 			file: FILE
 			data: STRING
 			data_size: INTEGER
 			total_size: INTEGER
 		do
-			Result := True
 			data_size := 1
 			create {RAW_FILE} file.make_open_read (a_fn)
 			if file.exists then
@@ -467,6 +484,7 @@ feature {NONE} -- Initialization
 	is_unicode: BOOLEAN
 
 	BUFFER_SIZE: INTEGER = 65536
+
     MAX_DOCUMENTS : INTEGER = 16
 
 

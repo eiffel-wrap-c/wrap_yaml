@@ -131,10 +131,10 @@ feature -- Access
 			l_value: POINTER
 		do
 			if attached tag then
-				l_tag := tag.area.base_address
+				l_tag := (create {C_STRING}.make (tag)).item
 			end
 			if attached value then
-				l_value := value.area.base_address
+				l_value := (create {C_STRING}.make (value)).item
 			end
 			Result := c_yaml_document_add_scalar (document.item, l_tag, l_value, length, style)
 		end
@@ -145,7 +145,7 @@ feature -- Access
 			l_tag: POINTER
 		do
 			if attached tag then
-				l_tag := tag.area.base_address
+				l_tag := (create {C_STRING}.make (tag)).item
 			end
 			Result := c_yaml_document_add_sequence (document.item, l_tag, style)
 		end
@@ -156,7 +156,7 @@ feature -- Access
 			l_tag: POINTER
 		do
 			if attached tag then
-				l_tag := tag.area.base_address
+				l_tag := (create {C_STRING}.make (tag)).item
 			end
 			Result := c_yaml_document_add_mapping (document.item, l_tag, style)
 		end
