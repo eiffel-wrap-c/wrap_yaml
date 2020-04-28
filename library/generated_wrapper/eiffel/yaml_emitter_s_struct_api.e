@@ -45,25 +45,25 @@ feature {ANY} -- Member Access
 			error_set: a_value = error
 		end
 
-	problem:  detachable STRING
+	problem:  detachable C_STRING
 			-- Access member `problem`
 		require
 			exists: exists
 		do
 			if attached c_problem (item) as l_ptr then
-				Result := (create {C_STRING}.make_by_pointer (l_ptr)).string
+				create Result.make_by_pointer (l_ptr)
 			end
 		ensure
 			result_void: Result = Void implies c_problem (item) = default_pointer
-			result_not_void: attached Result as l_result implies l_result.same_string ((create {C_STRING}.make_by_pointer (item)).string)
+			result_not_void: attached Result as l_result implies l_result.string.same_string ((create {C_STRING}.make_by_pointer (item)).string)
 		end
 
-	set_problem (a_value: STRING) 
+	set_problem (a_value: C_STRING) 
 			-- Change the value of member `problem` to `a_value`.
 		require
 			exists: exists
 		do
-			set_c_problem (item, (create {C_STRING}.make (a_value)).item )
+			set_c_problem (item, a_value.item )
 		end
 
 	write_handler: POINTER

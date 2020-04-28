@@ -61,19 +61,22 @@ feature {NONE} -- Initialization
 			l_parser: YAML_PARSER_S_STRUCT_API
 			l_emitter:  YAML_EMITTER_S_STRUCT_API
 			l_event: YAML_EVENT_S_STRUCT_API
-			l_document: YAML_DOCUMENT_S_STRUCT_API
 			buffer: STRING
 			events: ARRAY [YAML_EVENT_S_STRUCT_API]
 			res, done: BOOLEAN
 			written: INTEGER
 			event_number: INTEGER
 			count: INTEGER
+			n_buffer: ARRAY [NATURAL_8]
+			mp: MANAGED_POINTER
 		do
 			create {RAW_FILE} file.make_with_name (a_fn)
 
 			if file.exists then
 				file.open_read
+				create n_buffer.make_filled (0, 1, buffer_size + 1)
 				create buffer.make_filled ('%U', buffer_size + 1)
+				create mp.make_from_array (n_buffer)
 				create events.make_filled (create {YAML_EVENT_S_STRUCT_API}.make, 1, max_events )
 				across events as ic loop
 					events [ic.cursor_index] := create {YAML_EVENT_S_STRUCT_API}.make
@@ -99,7 +102,8 @@ feature {NONE} -- Initialization
 				if is_unicode then
 					yaml.yaml_emitter_set_unicode (l_emitter, 1)
 				end
-				yaml.yaml_emitter_set_output_string (l_emitter, buffer, Buffer_size, $written)
+					-- Using a Managed Pointer.
+				yaml.yaml_emitter_set_output_string_2 (l_emitter, mp, Buffer_size, $written)
 
 				from
 					create l_event.make
@@ -122,12 +126,17 @@ feature {NONE} -- Initialization
 					end
 					event_number := event_number + 1
 					if yaml.yaml_emitter_emit (l_emitter, l_event) /= 1 then
-						print_out (a_fn, buffer, written, count)
+						--print_out (a_fn, buffer, written, count)
 						{EXCEPTIONS}.die (1)
 					end
 					count := count + 1
 				end
 
+					-- Copy the data from the Managed Pointer
+				n_buffer := mp.read_array (0, buffer_size + 1)
+				across n_buffer as ic loop
+					buffer.put ( ic.item.to_character_8, ic.cursor_index)
+				end
 				yaml.yaml_parser_delete (l_parser)
 
 				--file.close  --Here raise a segfault on finalized mode.
@@ -248,7 +257,7 @@ feature {NONE} -- Initialization
 						loop
 							if (attached l_tag1.handle as l_handle_1 and then
 								attached l_tag2.handle as l_handle_2 and then
-								l_handle_1.same_string (l_handle_2)) or (
+								l_handle_1.string.same_string (l_handle_2.string)) or (
 								l_tag1.handle = Void and then
 								l_tag2.handle = Void)
 							then
@@ -258,7 +267,7 @@ feature {NONE} -- Initialization
 							end
 							if Result and then  (attached l_tag1.a_prefix as l_prefix_1 and then
 								attached l_tag2.a_prefix as l_prefix_2 and then
-								l_prefix_1.same_string (l_prefix_2)) or (
+								l_prefix_1.string.same_string (l_prefix_2.string)) or (
 								l_tag1.a_prefix = Void and then
 								l_tag2.a_prefix = Void)
 							then

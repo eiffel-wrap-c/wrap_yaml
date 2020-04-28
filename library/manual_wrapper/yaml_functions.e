@@ -105,6 +105,10 @@ feature -- Access
 			c_yaml_emitter_set_output_string (emitter.item, output.area.base_address, size, size_written)
 		end
 
+	yaml_emitter_set_output_string_2 (emitter: YAML_EMITTER_S_STRUCT_API; output: MANAGED_POINTER; size: INTEGER; size_written: POINTER)
+		do
+			c_yaml_emitter_set_output_string (emitter.item, output.item, size, size_written)
+		end
 
 	yaml_document_initialize (document: YAML_DOCUMENT_S_STRUCT_API; version_directive: detachable YAML_VERSION_DIRECTIVE_S_STRUCT_API; tag_directives_start: detachable YAML_TAG_DIRECTIVE_S_STRUCT_API; tag_directives_end: detachable YAML_TAG_DIRECTIVE_S_STRUCT_API; start_implicit: INTEGER; end_implicit: INTEGER): INTEGER
 		local
