@@ -30,7 +30,7 @@ feature {NONE} -- Initialization
 		do
 				-- Input file name
 			if attached separate_character_option_value ('f') as l_val then
-            	scan_yaml (l_val.as_string_8)
+            	scan_yaml (l_val.to_string_8)
             else
             	print ("%NError: Missing file%N")
             	print ("Usage: scanner -f %"PATH/file.yaml%"%N")
@@ -52,13 +52,13 @@ feature {NONE} -- Initialization
 				file.open_read
 				create l_parser.make
 						-- Initialize the parser object.
-				if yaml.yaml_parser_initialize (l_parser) = 0 then
+				if {YAML_FUNCTIONS}.yaml_parser_initialize (l_parser) = 0 then
 					print ("Error initializing parser object%N")
 					{EXCEPTIONS}.die (1)
 				end
 
 					-- Set the input file
-				yaml.yaml_parser_set_input_file (l_parser, file)
+				{YAML_FUNCTIONS}.yaml_parser_set_input_file (l_parser, file)
 
 					-- Read the token sequence
 				from
@@ -68,7 +68,7 @@ feature {NONE} -- Initialization
 				loop
 						-- Retrieve the next token
 						-- Scan the input stream and produce the next token.
-					if yaml.yaml_parser_scan (l_parser, l_token) = 0 then
+					if {YAML_FUNCTIONS}.yaml_parser_scan (l_parser, l_token) = 0 then
 						print ("Parse error%N")
 						{EXCEPTIONS}.die (1)
 					end
@@ -78,23 +78,16 @@ feature {NONE} -- Initialization
 					if l_Token.type = {YAML_TOKEN_TYPE_E_ENUM_API}.YAML_STREAM_END_TOKEN then
 						done := True
 					end
-					yaml.yaml_token_delete (l_token)
+					{YAML_FUNCTIONS}.yaml_token_delete (l_token)
 					count := count + 1
 				end
 
 				print ("Number of Tokens: "+ count.out +" in file : " + a_fn + "%N")
-				yaml.yaml_parser_delete (l_parser)
+				{YAML_FUNCTIONS}.yaml_parser_delete (l_parser)
 				file.close
 			else
 				print ("Error file [" + a_fn + "] does not  exisit%N")
 			end
-		end
-
-feature {NONE} -- Implementation
-
-	yaml: YAML_FUNCTIONS
-		once
-			create Result
 		end
 
 end

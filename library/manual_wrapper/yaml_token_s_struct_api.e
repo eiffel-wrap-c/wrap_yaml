@@ -152,8 +152,6 @@ feature -- Token Data: Version directive
 
 	version_directive_minor: INTEGER
 			-- The minor version number.
-		local
-			l_ptr: POINTER
 		do
 			Result := c_version_directive_minor (item)
 		end

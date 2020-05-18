@@ -15,7 +15,7 @@ LibYAML is a YAML parser and emitter library.
 
 ### Linux
 
-Download the source package: http://pyyaml.org/download/libyaml/yaml-0.2.2.tar.gz.
+Download the source package: http://pyyaml.org/download/libyaml/yaml-0.2.4.tar.gz.
 
 To build and install LibYAML, run
 
@@ -42,9 +42,9 @@ At the moment we use the convention that `libyaml` will be installed at
 
 Using vcpkg (https://github.com/microsoft/vcpkg) tool, you can install libyaml library
 
-	vcpkg install libyaml:x64-windows
+	vcpkg install libyaml:x64-windows-static
 	
-Then copy the files `yaml.dll` and `yaml.lib` to `%LIBRARY_PATH%wrap_library/library/C/include/lib`
+Then copy the file `OFF.lib` to `%LIBRARY_PATH%wrap_library/library/C/include/lib` and rename the library as `yaml.lib`
 Where `%LIBRARY_PATH%` is where you clone/download `wrap_yaml` source code.
 
 ## Status
@@ -60,4 +60,21 @@ Work in progress
 * [Yaml Emitter](examples/emitter)  `Shows how to use emitter API.`
 * [Yaml Dumper](examples/dumper)    `Shows a dump example`. 
   
+
+### How to compile the C library glue code.
+
+Before to use the examples you will need to compile the C glue code, go to 
+
+	library/generated_wrapper/c/src
+
+and run
+
+	finish_freezing --library
+
+It will copy the C lib `eif_libyaml.a` to `$ECF_CONFIG_PATH/C/spec/$(ISE_PLATFORM)/lib/`  or `eif_libyaml.lib`  to `$ECF_CONFIG_PATH/C/spec/$ISE_C_COMPILER/$ISE_PLATFORM/lib` 
+
+
+
+
+
 

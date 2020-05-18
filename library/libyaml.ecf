@@ -44,6 +44,12 @@
 				<platform value="windows"/>
 			</condition>
 		</external_object>
+		<external_cflag value="-DYAML_DECLARE_STATIC">
+			<condition>
+				<platform value="windows"/>
+			</condition>
+		</external_cflag>
+			
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<cluster name="src" location=".\" recursive="true">
 			<file_rule>

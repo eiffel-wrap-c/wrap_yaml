@@ -9,22 +9,21 @@ feature {NONE} -- Initialization
 		do
 			print ("%N Yaml Version")
 			yaml_version
---			print ("%N Parse from file")
---			parse_yaml_from_file
---			print ("%N Parse from String")
---			parse_yaml_from_string
---			print ("%N Scan from file")
---			scan_yaml_from_file
---			print ("%N Load from file")
---			load_yaml_from_file
-
+			print ("%N Parse from file")
+			parse_yaml_from_file
+			print ("%N Parse from String")
+			parse_yaml_from_string
+			print ("%N Scan from file")
+			scan_yaml_from_file
+			print ("%N Load from file")
+			load_yaml_from_file
 		end
 
 	yaml_version
 		local
 			l_ptr: POINTER
 		do
-			l_ptr := yaml.yaml_get_version_string
+			l_ptr := {YAML_FUNCTIONS}.yaml_get_version_string
 			if l_ptr /= default_pointer then
 				print ("Yaml version:" + (create {STRING}.make_from_c (l_ptr)))
 			end
@@ -43,17 +42,17 @@ feature {NONE} -- Initialization
 
 			create l_parser.make
 			check
-				yaml_initialization: yaml.yaml_parser_initialize (l_parser) = 1
+				yaml_initialization: {YAML_FUNCTIONS}.yaml_parser_initialize (l_parser) = 1
 			end
 
-			yaml.yaml_parser_set_input_file (l_parser, file)
+			{YAML_FUNCTIONS}.yaml_parser_set_input_file (l_parser, file)
 
 			from
 				create y_event.make
 			until
 				done
 			loop
-				if yaml.yaml_parser_parse (l_parser, y_event) = 0 then
+				if {YAML_FUNCTIONS}.yaml_parser_parse (l_parser, y_event) = 0 then
 					create l_exception
 					l_exception.set_description ("Parse error")
 					l_exception.raise
@@ -61,12 +60,12 @@ feature {NONE} -- Initialization
 				if y_event.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_STREAM_END_EVENT then
 					done := True
 				end
-				yaml.yaml_event_delete (y_event)
+				{YAML_FUNCTIONS}.yaml_event_delete (y_event)
 				count := count + 1
 			end
 
 			print ("%NNumber of Events: " + count.out)
-			yaml.yaml_parser_delete (l_parser)
+			{YAML_FUNCTIONS}.yaml_parser_delete (l_parser)
 			file.close
 		end
 
@@ -83,17 +82,17 @@ feature {NONE} -- Initialization
 
 			create l_parser.make
 			check
-				yaml_initialization: yaml.yaml_parser_initialize (l_parser) = 1
+				yaml_initialization: {YAML_FUNCTIONS}.yaml_parser_initialize (l_parser) = 1
 			end
 
-			yaml.yaml_parser_set_input_file (l_parser, file)
+			{YAML_FUNCTIONS}.yaml_parser_set_input_file (l_parser, file)
 
 			from
 				create l_token.make
 			until
 				done
 			loop
-				if yaml.yaml_parser_scan (l_parser, l_token) = 0 then
+				if {YAML_FUNCTIONS}.yaml_parser_scan (l_parser, l_token) = 0 then
 					create l_exception
 					l_exception.set_description ("Parse error")
 					l_exception.raise
@@ -101,12 +100,12 @@ feature {NONE} -- Initialization
 				if l_token.type = {YAML_TOKEN_TYPE_E_ENUM_API}.YAML_STREAM_END_TOKEN then
 					done := True
 				end
-				yaml.yaml_token_delete (l_token)
+				{YAML_FUNCTIONS}.yaml_token_delete (l_token)
 				count := count + 1
 			end
 
 			print ("%NNumber of Tokens: " + count.out)
-			yaml.yaml_parser_delete (l_parser)
+			{YAML_FUNCTIONS}.yaml_parser_delete (l_parser)
 			file.close
 		end
 
@@ -123,22 +122,22 @@ feature {NONE} -- Initialization
 
 			create l_parser.make
 			check
-				yaml_initialization: yaml.yaml_parser_initialize (l_parser) = 1
+				yaml_initialization: {YAML_FUNCTIONS}.yaml_parser_initialize (l_parser) = 1
 			end
 
-			yaml.yaml_parser_set_input_file (l_parser, file)
+			{YAML_FUNCTIONS}.yaml_parser_set_input_file (l_parser, file)
 
 			from
 				create l_document.make
 			until
 				done
 			loop
-				if yaml.yaml_parser_load (l_parser, l_document) = 0 then
+				if {YAML_FUNCTIONS}.yaml_parser_load (l_parser, l_document) = 0 then
 					create l_exception
 					l_exception.set_description ("Parse error")
 					l_exception.raise
 				end
-				if attached {YAML_NODE_S_STRUCT_API} yaml.yaml_document_get_root_node (l_document) as l_node then
+				if attached {YAML_NODE_S_STRUCT_API} {YAML_FUNCTIONS}.yaml_document_get_root_node (l_document) as l_node then
 					if (create {YAML_NODE_TYPE_E_ENUM_API}).is_valid_enum (l_node.type) then
 						print ("%N Valid Node Type")
 						done := True
@@ -148,12 +147,12 @@ feature {NONE} -- Initialization
 						l_exception.raise
 					end
 				end
-				yaml.yaml_document_delete (l_document)
+				{YAML_FUNCTIONS}.yaml_document_delete (l_document)
 				count := count + 1
 			end
 
 			print ("%NNumber of Documents: " + count.out)
-			yaml.yaml_parser_delete (l_parser)
+			{YAML_FUNCTIONS}.yaml_parser_delete (l_parser)
 			file.close
 		end
 
@@ -171,17 +170,17 @@ feature {NONE} -- Initialization
 			create l_parser.make
 			check
 					-- Create the Parser object
-				yaml_initialization: yaml.yaml_parser_initialize (l_parser) = 1
+				yaml_initialization: {YAML_FUNCTIONS}.yaml_parser_initialize (l_parser) = 1
 			end
 
-			yaml.yaml_parser_set_input_string (l_parser, l_string)
+			{YAML_FUNCTIONS}.yaml_parser_set_input_string (l_parser, l_string)
 
 			from
 				create y_event.make
 			until
 				done
 			loop
-				if yaml.yaml_parser_parse (l_parser, y_event) = 0 then
+				if {YAML_FUNCTIONS}.yaml_parser_parse (l_parser, y_event) = 0 then
 					create l_exception
 					l_exception.set_description ("Parse error")
 					l_exception.raise
@@ -189,20 +188,15 @@ feature {NONE} -- Initialization
 				if y_event.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_STREAM_END_EVENT then
 					done := True
 				end
-				yaml.yaml_event_delete (y_event)
+				{YAML_FUNCTIONS}.yaml_event_delete (y_event)
 				count := count + 1
 			end
 
 			print ("%NNumber of Events: " + count.out)
-			yaml.yaml_parser_delete (l_parser)
+			{YAML_FUNCTIONS}.yaml_parser_delete (l_parser)
 		end
 
 feature {NONE} -- Implementation
-
-	yaml: YAML_FUNCTIONS
-		once
-			create Result
-		end
 
 	anchors_string: STRING = "[
 base: &base

@@ -14,7 +14,7 @@ $spitshell >Makefile <<!GROK!THIS!
 SHELL = /bin/sh
 CC= $cc
 AR = ar rc
-CFLAGS = $optimize $ccflags $large -I$rt_include -I/usr/local/include/yaml.h -I../../../generated_wrapper/c/include -I../include  -I../../../C/include
+CFLAGS = $optimize $ccflags $large -I$rt_include -I../../../generated_wrapper/c/include -I../include `pkg-config --cflags libyaml` -I../../../C/include
 LDFLAGS = $ldflags
 LIBS = $libs
 MAKE = $make
@@ -29,7 +29,7 @@ $spitshell >>Makefile <<'!NO!SUBS!'
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
-OBJECTS = ewg_libyaml_callback_c_glue_code.o 
+OBJECTS = ewg_libyaml_callback_c_glue_code.o
 
 eif_libyaml.a: $(OBJECTS)
 	mkdir -p ../../../C/spec/$(PLATFORM)/lib

@@ -21,31 +21,43 @@ feature -- Access
 	yaml_get_version (major: POINTER; minor: POINTER; patch: POINTER)
 		do
 			c_yaml_get_version (major, minor, patch)
+		ensure
+			instance_free: class
 		end
 
 	yaml_token_delete (token: YAML_TOKEN_S_STRUCT_API)
 		do
 			c_yaml_token_delete (token.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_stream_start_event_initialize (event: YAML_EVENT_S_STRUCT_API; encoding: INTEGER): INTEGER
 		do
 			Result := c_yaml_stream_start_event_initialize (event.item, encoding)
+		ensure
+			instance_free: class
 		end
 
 	yaml_stream_end_event_initialize (event: YAML_EVENT_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_stream_end_event_initialize (event.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_document_start_event_initialize (event: YAML_EVENT_S_STRUCT_API; version_directive: YAML_VERSION_DIRECTIVE_S_STRUCT_API; tag_directives_start: YAML_TAG_DIRECTIVE_S_STRUCT_API; tag_directives_end: YAML_TAG_DIRECTIVE_S_STRUCT_API; implicit: INTEGER): INTEGER
 		do
 			Result := c_yaml_document_start_event_initialize (event.item, version_directive.item, tag_directives_start.item, tag_directives_end.item, implicit)
+		ensure
+			instance_free: class
 		end
 
 	yaml_document_end_event_initialize (event: YAML_EVENT_S_STRUCT_API; implicit: INTEGER): INTEGER
 		do
 			Result := c_yaml_document_end_event_initialize (event.item, implicit)
+		ensure
+			instance_free: class
 		end
 
 	yaml_alias_event_initialize (event: YAML_EVENT_S_STRUCT_API; anchor: STRING): INTEGER
@@ -54,6 +66,8 @@ feature -- Access
 		do
 			create anchor_c_string.make (anchor)
 			Result := c_yaml_alias_event_initialize (event.item, anchor_c_string.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_scalar_event_initialize (event: YAML_EVENT_S_STRUCT_API; anchor: STRING; tag: STRING; value: STRING; length: INTEGER; plain_implicit: INTEGER; quoted_implicit: INTEGER; style: INTEGER): INTEGER
@@ -66,6 +80,8 @@ feature -- Access
 			create tag_c_string.make (tag)
 			create value_c_string.make (value)
 			Result := c_yaml_scalar_event_initialize (event.item, anchor_c_string.item, tag_c_string.item, value_c_string.item, length, plain_implicit, quoted_implicit, style)
+		ensure
+			instance_free: class
 		end
 
 	yaml_sequence_start_event_initialize (event: YAML_EVENT_S_STRUCT_API; anchor: STRING; tag: STRING; implicit: INTEGER; style: INTEGER): INTEGER
@@ -76,11 +92,15 @@ feature -- Access
 			create anchor_c_string.make (anchor)
 			create tag_c_string.make (tag)
 			Result := c_yaml_sequence_start_event_initialize (event.item, anchor_c_string.item, tag_c_string.item, implicit, style)
+		ensure
+			instance_free: class
 		end
 
 	yaml_sequence_end_event_initialize (event: YAML_EVENT_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_sequence_end_event_initialize (event.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_mapping_start_event_initialize (event: YAML_EVENT_S_STRUCT_API; anchor: STRING; tag: STRING; implicit: INTEGER; style: INTEGER): INTEGER
@@ -91,26 +111,36 @@ feature -- Access
 			create anchor_c_string.make (anchor)
 			create tag_c_string.make (tag)
 			Result := c_yaml_mapping_start_event_initialize (event.item, anchor_c_string.item, tag_c_string.item, implicit, style)
+		ensure
+			instance_free: class
 		end
 
 	yaml_mapping_end_event_initialize (event: YAML_EVENT_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_mapping_end_event_initialize (event.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_event_delete (event: YAML_EVENT_S_STRUCT_API)
 		do
 			c_yaml_event_delete (event.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_document_initialize (document: YAML_DOCUMENT_S_STRUCT_API; version_directive: YAML_VERSION_DIRECTIVE_S_STRUCT_API; tag_directives_start: YAML_TAG_DIRECTIVE_S_STRUCT_API; tag_directives_end: YAML_TAG_DIRECTIVE_S_STRUCT_API; start_implicit: INTEGER; end_implicit: INTEGER): INTEGER
 		do
 			Result := c_yaml_document_initialize (document.item, version_directive.item, tag_directives_start.item, tag_directives_end.item, start_implicit, end_implicit)
+		ensure
+			instance_free: class
 		end
 
 	yaml_document_delete (document: YAML_DOCUMENT_S_STRUCT_API)
 		do
 			c_yaml_document_delete (document.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_document_get_node (document: YAML_DOCUMENT_S_STRUCT_API; index: INTEGER): detachable YAML_NODE_S_STRUCT_API
@@ -118,7 +148,8 @@ feature -- Access
 			if attached c_yaml_document_get_node (document.item, index) as l_ptr and then not l_ptr.is_default_pointer then
 				create Result.make_by_pointer ( l_ptr )
 			end
-
+		ensure
+			instance_free: class
 		end
 
 	yaml_document_get_root_node (document: YAML_DOCUMENT_S_STRUCT_API): detachable YAML_NODE_S_STRUCT_API
@@ -126,7 +157,8 @@ feature -- Access
 			if attached c_yaml_document_get_root_node (document.item) as l_ptr and then not l_ptr.is_default_pointer then
 				create Result.make_by_pointer ( l_ptr )
 			end
-
+		ensure
+			instance_free: class
 		end
 
 	yaml_document_add_scalar (document: YAML_DOCUMENT_S_STRUCT_API; tag: STRING; value: STRING; length: INTEGER; style: INTEGER): INTEGER
@@ -137,6 +169,8 @@ feature -- Access
 			create tag_c_string.make (tag)
 			create value_c_string.make (value)
 			Result := c_yaml_document_add_scalar (document.item, tag_c_string.item, value_c_string.item, length, style)
+		ensure
+			instance_free: class
 		end
 
 	yaml_document_add_sequence (document: YAML_DOCUMENT_S_STRUCT_API; tag: STRING; style: INTEGER): INTEGER
@@ -145,6 +179,8 @@ feature -- Access
 		do
 			create tag_c_string.make (tag)
 			Result := c_yaml_document_add_sequence (document.item, tag_c_string.item, style)
+		ensure
+			instance_free: class
 		end
 
 	yaml_document_add_mapping (document: YAML_DOCUMENT_S_STRUCT_API; tag: STRING; style: INTEGER): INTEGER
@@ -153,26 +189,36 @@ feature -- Access
 		do
 			create tag_c_string.make (tag)
 			Result := c_yaml_document_add_mapping (document.item, tag_c_string.item, style)
+		ensure
+			instance_free: class
 		end
 
 	yaml_document_append_sequence_item (document: YAML_DOCUMENT_S_STRUCT_API; sequence: INTEGER; item: INTEGER): INTEGER
 		do
 			Result := c_yaml_document_append_sequence_item (document.item, sequence, item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_document_append_mapping_pair (document: YAML_DOCUMENT_S_STRUCT_API; mapping: INTEGER; key: INTEGER; value: INTEGER): INTEGER
 		do
 			Result := c_yaml_document_append_mapping_pair (document.item, mapping, key, value)
+		ensure
+			instance_free: class
 		end
 
 	yaml_parser_initialize (parser: YAML_PARSER_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_parser_initialize (parser.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_parser_delete (parser: YAML_PARSER_S_STRUCT_API)
 		do
 			c_yaml_parser_delete (parser.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_parser_set_input_string (parser: YAML_PARSER_S_STRUCT_API; input: STRING; size: INTEGER)
@@ -181,41 +227,57 @@ feature -- Access
 		do
 			create input_c_string.make (input)
 			c_yaml_parser_set_input_string (parser.item, input_c_string.item, size)
+		ensure
+			instance_free: class
 		end
 
 	yaml_parser_set_input (parser: YAML_PARSER_S_STRUCT_API; handler: POINTER; data: POINTER)
 		do
 			c_yaml_parser_set_input (parser.item, handler, data)
+		ensure
+			instance_free: class
 		end
 
 	yaml_parser_set_encoding (parser: YAML_PARSER_S_STRUCT_API; encoding: INTEGER)
 		do
 			c_yaml_parser_set_encoding (parser.item, encoding)
+		ensure
+			instance_free: class
 		end
 
 	yaml_parser_scan (parser: YAML_PARSER_S_STRUCT_API; token: YAML_TOKEN_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_parser_scan (parser.item, token.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_parser_parse (parser: YAML_PARSER_S_STRUCT_API; event: YAML_EVENT_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_parser_parse (parser.item, event.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_parser_load (parser: YAML_PARSER_S_STRUCT_API; document: YAML_DOCUMENT_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_parser_load (parser.item, document.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_initialize (emitter: YAML_EMITTER_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_emitter_initialize (emitter.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_delete (emitter: YAML_EMITTER_S_STRUCT_API)
 		do
 			c_yaml_emitter_delete (emitter.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_set_output_string (emitter: YAML_EMITTER_S_STRUCT_API; output: STRING; size: INTEGER; size_written: POINTER)
@@ -224,66 +286,92 @@ feature -- Access
 		do
 			create output_c_string.make (output)
 			c_yaml_emitter_set_output_string (emitter.item, output_c_string.item, size, size_written)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_set_output (emitter: YAML_EMITTER_S_STRUCT_API; handler: POINTER; data: POINTER)
 		do
 			c_yaml_emitter_set_output (emitter.item, handler, data)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_set_encoding (emitter: YAML_EMITTER_S_STRUCT_API; encoding: INTEGER)
 		do
 			c_yaml_emitter_set_encoding (emitter.item, encoding)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_set_canonical (emitter: YAML_EMITTER_S_STRUCT_API; canonical: INTEGER)
 		do
 			c_yaml_emitter_set_canonical (emitter.item, canonical)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_set_indent (emitter: YAML_EMITTER_S_STRUCT_API; indent: INTEGER)
 		do
 			c_yaml_emitter_set_indent (emitter.item, indent)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_set_width (emitter: YAML_EMITTER_S_STRUCT_API; width: INTEGER)
 		do
 			c_yaml_emitter_set_width (emitter.item, width)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_set_unicode (emitter: YAML_EMITTER_S_STRUCT_API; unicode: INTEGER)
 		do
 			c_yaml_emitter_set_unicode (emitter.item, unicode)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_set_break (emitter: YAML_EMITTER_S_STRUCT_API; line_break: INTEGER)
 		do
 			c_yaml_emitter_set_break (emitter.item, line_break)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_emit (emitter: YAML_EMITTER_S_STRUCT_API; event: YAML_EVENT_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_emitter_emit (emitter.item, event.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_open (emitter: YAML_EMITTER_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_emitter_open (emitter.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_close (emitter: YAML_EMITTER_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_emitter_close (emitter.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_dump (emitter: YAML_EMITTER_S_STRUCT_API; document: YAML_DOCUMENT_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_emitter_dump (emitter.item, document.item)
+		ensure
+			instance_free: class
 		end
 
 	yaml_emitter_flush (emitter: YAML_EMITTER_S_STRUCT_API): INTEGER
 		do
 			Result := c_yaml_emitter_flush (emitter.item)
+		ensure
+			instance_free: class
 		end
 
 feature -- Externals
@@ -710,7 +798,5 @@ feature -- Externals
 				return yaml_emitter_flush ((yaml_emitter_t*)$emitter);
 			]"
 		end
-
-feature -- Externals Address
 
 end

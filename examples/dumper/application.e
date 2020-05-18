@@ -43,7 +43,7 @@ feature {NONE} -- Initialization
 				until
 					i > argument_count
 				loop
-					dumper (argument_array.at (i).as_string_32)
+					dumper (argument_array.at (i).to_string_8)
 					i := i + 1
 		    		count := count + 1
 		    	end
@@ -63,8 +63,8 @@ feature {NONE} -- Initialization
 			l_document: YAML_DOCUMENT_S_STRUCT_API
 			buffer: STRING
 			documents: ARRAY [YAML_DOCUMENT_S_STRUCT_API]
-			res, done: BOOLEAN
-			l_exception: EXCEPTION
+			done: BOOLEAN
+
 			written: INTEGER
 			document_number: INTEGER
 			count: INTEGER
@@ -88,27 +88,28 @@ feature {NONE} -- Initialization
 				create l_emitter.make
 				create l_parser.make
 				print ("%N Loading, dumping, and loading again: " + a_fn + "%N")
-				if yaml.yaml_parser_initialize (l_parser) = 0 then
+				if {YAML_FUNCTIONS}.yaml_parser_initialize (l_parser) = 0 then
 					print ("Error initializing parse object%N")
 					{EXCEPTIONS}.die (1)
 				end
 
-				yaml.yaml_parser_set_input_file (l_parser, file)
+				{YAML_FUNCTIONS}.yaml_parser_set_input_file (l_parser, file)
 
-				if yaml.yaml_emitter_initialize (l_emitter) = 0 then
+				if {YAML_FUNCTIONS}.yaml_emitter_initialize (l_emitter) = 0 then
 					print ("Error initializing emitter object%N")
 					{EXCEPTIONS}.die (1)
 				end
 
 				if is_canonical then
-					yaml.yaml_emitter_set_canonical (l_emitter, 1)
+					{YAML_FUNCTIONS}.yaml_emitter_set_canonical (l_emitter, 1)
 				end
 				if is_unicode then
-					yaml.yaml_emitter_set_unicode (l_emitter, 1)
+					{YAML_FUNCTIONS}.yaml_emitter_set_unicode (l_emitter, 1)
 				end
-				yaml.yaml_emitter_set_output_string_2 (l_emitter, mp, Buffer_size, $written)
+				--{YAML_FUNCTIONS}.yaml_emitter_set_output_string_2 (l_emitter, mp, Buffer_size, $written)
+				{YAML_FUNCTIONS}.yaml_emitter_set_output_string (l_emitter, buffer, Buffer_size, $written)
 
-				if yaml.yaml_emitter_open (l_emitter) = 0 then
+				if {YAML_FUNCTIONS}.yaml_emitter_open (l_emitter) = 0 then
 					print ("Error initializing emitter object%N")
 					{EXCEPTIONS}.die (1)
 				end
@@ -119,12 +120,12 @@ feature {NONE} -- Initialization
 				until
 					done
 				loop
-					if yaml.yaml_parser_load (l_parser, l_document) = 0 then
+					if {YAML_FUNCTIONS}.yaml_parser_load (l_parser, l_document) = 0 then
 						print ("Load error%N")
 						{EXCEPTIONS}.die (1)
 					end
 					create aux_doc.make_by_pointer (l_document.item)
-					done := not (attached yaml.yaml_document_get_root_node (l_document))
+					done := not (attached {YAML_FUNCTIONS}.yaml_document_get_root_node (l_document))
 
 					if not done then
 						if document_number >= MAX_DOCUMENTS then
@@ -135,15 +136,15 @@ feature {NONE} -- Initialization
 							print ("Error copy document%N")
 							{EXCEPTIONS}.die (1)
 						end
-						if yaml.yaml_emitter_dump (l_emitter, l_document) /= 1 then
-							if yaml.yaml_emitter_flush (l_emitter) /= 1 then
+						if {YAML_FUNCTIONS}.yaml_emitter_dump (l_emitter, l_document) /= 1 then
+							if {YAML_FUNCTIONS}.yaml_emitter_flush (l_emitter) /= 1 then
 								print ("Error flushing the accumulated characters to the output.t%N")
 							else
 								print_out (a_fn, buffer, written, count)
 							end
 						end
 					else
-						yaml.yaml_document_delete (l_document)
+						{YAML_FUNCTIONS}.yaml_document_delete (l_document)
 					end
 					document_number := document_number + 1
 					count := count + 1
@@ -154,43 +155,43 @@ feature {NONE} -- Initialization
 				across n_buffer as ic loop
 					buffer.put ( ic.item.to_character_8, ic.cursor_index)
 				end
-				yaml.yaml_parser_delete (l_parser)
+				{YAML_FUNCTIONS}.yaml_parser_delete (l_parser)
 
 				-- file.close Here raise a segfault on finalized mode.
 
-				if yaml.yaml_emitter_close (l_emitter) = 0 then
+				if {YAML_FUNCTIONS}.yaml_emitter_close (l_emitter) = 0 then
 					print ("Error closing emittert%N")
 					{EXCEPTIONS}.die (1)
 				end
-				yaml.yaml_emitter_delete (l_emitter)
+				{YAML_FUNCTIONS}.yaml_emitter_delete (l_emitter)
 
 				count := 0
 				done := False
-				if yaml.yaml_parser_initialize (l_parser) /= 1 then
+				if {YAML_FUNCTIONS}.yaml_parser_initialize (l_parser) /= 1 then
 					print ("Error Initializaint the parser object%N")
 					{EXCEPTIONS}.die (1)
 				end
-				yaml.yaml_parser_set_input_string(l_parser, buffer.substring (1, written));
+				{YAML_FUNCTIONS}.yaml_parser_set_input_string(l_parser, buffer.substring (1, written));
 				from
 					create l_document.make
 				until
 					done
 				loop
-					if yaml.yaml_parser_load (l_parser, l_document) = 0  then
+					if {YAML_FUNCTIONS}.yaml_parser_load (l_parser, l_document) = 0  then
 						print_out(a_fn, buffer.substring (1, written), written, count)
 						{EXCEPTIONS}.die (1)
 					end
-					done := not (attached yaml.yaml_document_get_root_node(l_document))
+					done := not (attached {YAML_FUNCTIONS}.yaml_document_get_root_node(l_document))
 					if not done then
 						if compare_documents (documents [count + 1], l_document) = False then
 							print_out (a_fn, buffer.substring (1, written), written, count)
 						end
 					end
-					yaml.yaml_document_delete(l_document);
+					{YAML_FUNCTIONS}.yaml_document_delete(l_document);
 					count := count + 1
 				end
 				across documents as  ic loop
-					yaml.yaml_document_delete(ic.item);
+					{YAML_FUNCTIONS}.yaml_document_delete(ic.item);
 				end
 				print("%NPASSED (length: "+ written.out +")%N")
     		    print_out(a_fn, buffer.substring (1, written), written, -1)
@@ -211,24 +212,24 @@ feature {NONE} -- Initialization
 			count: INTEGER
 		do
 			Result := 1
-			if yaml.yaml_document_initialize (document_to, document_from.version_directive, document_from.tag_directives_start, document_from.tag_directives_end, document_from.start_implicit, document_from.end_implicit) = 1 then
+			if {YAML_FUNCTIONS}.yaml_document_initialize (document_to, document_from.version_directive, document_from.tag_directives_start, document_from.tag_directives_end, document_from.start_implicit, document_from.end_implicit) = 1 then
 				from
-					node := yaml.yaml_document_get_root_node (document_from)
+					node := {YAML_FUNCTIONS}.yaml_document_get_root_node (document_from)
 					i := 1
 				until
 					node = Void or error
 				loop
 					if attached node as l_node then
 						if l_node.type = {YAML_NODE_TYPE_E_ENUM_API}.YAML_SCALAR_NODE then
-							if yaml.yaml_document_add_scalar (document_to, l_node.tag, l_node.scalar_value, l_node.scalar_length, l_node.scalar_style) = 0 then
+							if {YAML_FUNCTIONS}.yaml_document_add_scalar (document_to, l_node.tag, l_node.scalar_value, l_node.scalar_length, l_node.scalar_style) = 0 then
 								error := True
 							end
 						elseif l_node.type = {YAML_NODE_TYPE_E_ENUM_API}.YAML_SEQUENCE_NODE then
-							if yaml.yaml_document_add_sequence (document_to, l_node.tag, l_node.sequence_style) = 0 then
+							if {YAML_FUNCTIONS}.yaml_document_add_sequence (document_to, l_node.tag, l_node.sequence_style) = 0 then
 								error := True
 							end
 						elseif l_node.type = {YAML_NODE_TYPE_E_ENUM_API}.YAML_MAPPING_NODE then
-							if yaml.yaml_document_add_mapping (document_to, l_node.tag, l_node.mapping_style) = 0 then
+							if {YAML_FUNCTIONS}.yaml_document_add_mapping (document_to, l_node.tag, l_node.mapping_style) = 0 then
 								error := True
 							end
 						else
@@ -236,12 +237,12 @@ feature {NONE} -- Initialization
 						end
 						if not error then
 							i := i + 1
-							node := yaml.yaml_document_get_node (document_from, i)
+							node := {YAML_FUNCTIONS}.yaml_document_get_node (document_from, i)
 						end
 					end
 				end
 				from
-					node := yaml.yaml_document_get_root_node (document_from)
+					node := {YAML_FUNCTIONS}.yaml_document_get_root_node (document_from)
 					if attached node then
 						node_start :=  node.item.to_integer_32
 					end
@@ -256,7 +257,7 @@ feature {NONE} -- Initialization
 							until
 								integer_32_from_pointer (item) = integer_32_from_pointer (l_node.sequence_items_top) or error
 							loop
-								if yaml.yaml_document_append_sequence_item (document_to, (l_node.item.to_integer_32 - node_start) // l_node.structure_size  + 1 , integer_32_from_pointer (item)) = 0 then
+								if {YAML_FUNCTIONS}.yaml_document_append_sequence_item (document_to, (l_node.item.to_integer_32 - node_start) // l_node.structure_size  + 1 , integer_32_from_pointer (item)) = 0 then
 									error := True
 								end
 								item :=  item + {PLATFORM}.pointer_bytes
@@ -271,7 +272,7 @@ feature {NONE} -- Initialization
 								count = 0 or error
 							loop
 								if attached pair as l_pair then
-									if yaml.yaml_document_append_mapping_pair (document_to, (l_node.item.to_integer_32 - node_start) // l_node.structure_size  + 1, l_pair.key, l_pair.value) = 0 then
+									if {YAML_FUNCTIONS}.yaml_document_append_mapping_pair (document_to, (l_node.item.to_integer_32 - node_start) // l_node.structure_size  + 1, l_pair.key, l_pair.value) = 0 then
 										error := True
 									end
 									if not error then
@@ -284,12 +285,12 @@ feature {NONE} -- Initialization
 						end
 						if not error then
 							i := i + 1
-							node := yaml.yaml_document_get_node (document_from, i)
+							node := {YAML_FUNCTIONS}.yaml_document_get_node (document_from, i)
 						end
 					end
 				end
 				if error then
-					yaml.yaml_document_delete (document_to)
+					{YAML_FUNCTIONS}.yaml_document_delete (document_to)
 					Result := 0
 				end
 			else
@@ -371,8 +372,8 @@ feature {NONE} -- Initialization
 			if l_level > 1000 then
 				Result := 0
 			else
-				node_1 := yaml.yaml_document_get_node(document_1, index_1)
-				node_2 := yaml.yaml_document_get_node(document_1, index_1)
+				node_1 := {YAML_FUNCTIONS}.yaml_document_get_node(document_1, index_1)
+				node_2 := {YAML_FUNCTIONS}.yaml_document_get_node(document_2, index_2)
 				if attached node_1 and then attached node_2 and then
 					node_1.type = node_2.type and then
 					attached node_1.tag as l_tag_1 and then attached node_2.tag as l_tag_2 and then
@@ -392,10 +393,10 @@ feature {NONE} -- Initialization
 							Result := 0
 						end
 					elseif node_1.type = {YAML_NODE_TYPE_E_ENUM_API}.YAML_SEQUENCE_NODE  then
-						if attached node_1.sequence_items_start /= default_pointer and then
-							attached node_1.sequence_items_top /= default_pointer and then
-							attached node_2.sequence_items_start /= default_pointer and then
-							attached node_2.sequence_items_top /=  default_pointer and then
+						if  node_1.sequence_items_start /= default_pointer and then
+							node_1.sequence_items_top /= default_pointer and then
+							node_2.sequence_items_start /= default_pointer and then
+							node_2.sequence_items_top /=  default_pointer and then
 							integer_32_from_pointer (node_1.sequence_items_top) - integer_32_from_pointer (node_1.sequence_items_start)
 							= integer_32_from_pointer (node_2.sequence_items_top) - integer_32_from_pointer (node_2.sequence_items_start)
 						then
@@ -504,11 +505,5 @@ feature -- Utility
 			Result := mp.read_integer_32 (0)
 		end
 
-feature {NONE} -- Implementation
-
-	yaml: YAML_FUNCTIONS
-		once
-			create Result
-		end
 
 end

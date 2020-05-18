@@ -43,7 +43,7 @@ feature {NONE} -- Initialization
 				until
 					i > argument_count
 				loop
-					emitter (argument_array.at (i).as_string_32)
+					emitter (argument_array.at (i).to_string_8)
 					i := i + 1
 		    		count := count + 1
 		    	end
@@ -63,7 +63,7 @@ feature {NONE} -- Initialization
 			l_event: YAML_EVENT_S_STRUCT_API
 			buffer: STRING
 			events: ARRAY [YAML_EVENT_S_STRUCT_API]
-			res, done: BOOLEAN
+			done: BOOLEAN
 			written: INTEGER
 			event_number: INTEGER
 			count: INTEGER
@@ -84,33 +84,33 @@ feature {NONE} -- Initialization
 				create l_emitter.make
 				create l_parser.make
 				print ("Parsing, emitting, and parsing again: " + a_fn + "%N")
-				if	yaml.yaml_parser_initialize (l_parser) = 0 then
+				if	{YAML_FUNCTIONS}.yaml_parser_initialize (l_parser) = 0 then
 					print ("Error initializing parser object%N")
 					{EXCEPTIONS}.die (1)
 				end
 
-				yaml.yaml_parser_set_input_file (l_parser, file)
+				{YAML_FUNCTIONS}.yaml_parser_set_input_file (l_parser, file)
 
-				if  yaml.yaml_emitter_initialize (l_emitter) = 0 then
+				if  {YAML_FUNCTIONS}.yaml_emitter_initialize (l_emitter) = 0 then
 					print ("Error initializing emiter object%N")
 					{EXCEPTIONS}.die (1)
 				end
 
 				if is_canonical then
-					yaml.yaml_emitter_set_canonical (l_emitter, 1)
+					{YAML_FUNCTIONS}.yaml_emitter_set_canonical (l_emitter, 1)
 				end
 				if is_unicode then
-					yaml.yaml_emitter_set_unicode (l_emitter, 1)
+					{YAML_FUNCTIONS}.yaml_emitter_set_unicode (l_emitter, 1)
 				end
 					-- Using a Managed Pointer.
-				yaml.yaml_emitter_set_output_string_2 (l_emitter, mp, Buffer_size, $written)
+				{YAML_FUNCTIONS}.yaml_emitter_set_output_string_2 (l_emitter, mp, Buffer_size, $written)
 
 				from
 					create l_event.make
 				until
 					done
 				loop
-					if yaml.yaml_parser_parse (l_parser, l_event) = 0 then
+					if {YAML_FUNCTIONS}.yaml_parser_parse (l_parser, l_event) = 0 then
 						print ("Parse error%N")
 						{EXCEPTIONS}.die (1)
 					end
@@ -125,7 +125,7 @@ feature {NONE} -- Initialization
 						{EXCEPTIONS}.die (1)
 					end
 					event_number := event_number + 1
-					if yaml.yaml_emitter_emit (l_emitter, l_event) /= 1 then
+					if {YAML_FUNCTIONS}.yaml_emitter_emit (l_emitter, l_event) /= 1 then
 						--print_out (a_fn, buffer, written, count)
 						{EXCEPTIONS}.die (1)
 					end
@@ -137,33 +137,33 @@ feature {NONE} -- Initialization
 				across n_buffer as ic loop
 					buffer.put ( ic.item.to_character_8, ic.cursor_index)
 				end
-				yaml.yaml_parser_delete (l_parser)
+				{YAML_FUNCTIONS}.yaml_parser_delete (l_parser)
 
 				--file.close  --Here raise a segfault on finalized mode.
 
-				yaml.yaml_emitter_delete (l_emitter)
+				{YAML_FUNCTIONS}.yaml_emitter_delete (l_emitter)
 
 				--
 				count := 0
 				done := False
-				if  yaml.yaml_parser_initialize (l_parser) = 0 then
+				if  {YAML_FUNCTIONS}.yaml_parser_initialize (l_parser) = 0 then
 					print ("Error initializing parser object%N")
 					{EXCEPTIONS}.die (1)
 				end
 
 
-				if  yaml.yaml_emitter_initialize (l_emitter) = 0 then
+				if  {YAML_FUNCTIONS}.yaml_emitter_initialize (l_emitter) = 0 then
 					print ("Error initializing emiter object%N")
 					{EXCEPTIONS}.die (1)
 				end
 
-				yaml.yaml_parser_set_input_string(l_parser, buffer.substring (1, written));
+				{YAML_FUNCTIONS}.yaml_parser_set_input_string(l_parser, buffer.substring (1, written));
 				from
 					create l_event.make
 				until
 					done
 				loop
-					if yaml.yaml_parser_parse (l_parser, l_event) = 0 then
+					if {YAML_FUNCTIONS}.yaml_parser_parse (l_parser, l_event) = 0 then
 						print_out(a_fn, buffer.substring (1, written), written, count);
 					end
 					done := l_event.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_STREAM_END_EVENT
@@ -171,11 +171,11 @@ feature {NONE} -- Initialization
 						print ("Error compare_events%N")
 						{EXCEPTIONS}.die (1)
 					end
-					yaml.yaml_event_delete(l_event);
+					{YAML_FUNCTIONS}.yaml_event_delete(l_event);
 					count := count + 1
 				end
 				across events as  ic loop
-					yaml.yaml_event_delete(ic.item);
+					{YAML_FUNCTIONS}.yaml_event_delete(ic.item);
 				end
 				print("%NPASSED (length: "+ written.out +")%N")
     		    print_out(a_fn, buffer.substring (1, written), written, -1)
@@ -188,29 +188,29 @@ feature {NONE} -- Initialization
 	copy_event (event_to: YAML_EVENT_S_STRUCT_API; event_from: YAML_EVENT_S_STRUCT_API): INTEGER
 		do
 			if event_from.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_STREAM_START_EVENT then
-				Result :=  yaml.yaml_stream_start_event_initialize (event_to, event_from.stream_start_encoding)
+				Result :=  {YAML_FUNCTIONS}.yaml_stream_start_event_initialize (event_to, event_from.stream_start_encoding)
 			elseif event_from.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_STREAM_END_EVENT then
-				Result :=  yaml.yaml_stream_end_event_initialize (event_to)
+				Result :=  {YAML_FUNCTIONS}.yaml_stream_end_event_initialize (event_to)
 			elseif event_from.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_DOCUMENT_START_EVENT then
-				Result := yaml.yaml_document_start_event_initialize (event_to, event_from.document_start_version_directive, event_from.document_start_tag_directives_start, event_from.document_start_tag_directives_end, event_from.document_start_implicit )
+				Result := {YAML_FUNCTIONS}.yaml_document_start_event_initialize (event_to, event_from.document_start_version_directive, event_from.document_start_tag_directives_start, event_from.document_start_tag_directives_end, event_from.document_start_implicit )
 			elseif event_from.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_DOCUMENT_END_EVENT then
-				Result := yaml.yaml_document_end_event_initialize(event_to,event_from.document_end_implicit)
+				Result := {YAML_FUNCTIONS}.yaml_document_end_event_initialize(event_to,event_from.document_end_implicit)
 			elseif event_from.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_ALIAS_EVENT then
 				if attached event_from.alias_anchor as alias_anchor then
-					Result := yaml.yaml_alias_event_initialize (event_to, alias_anchor)
+					Result := {YAML_FUNCTIONS}.yaml_alias_event_initialize (event_to, alias_anchor)
 				end
 			elseif event_from.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_SCALAR_EVENT then
 				if attached event_from.scalar_value as scalar_value then
-					Result :=  yaml.yaml_scalar_event_initialize (event_to, event_from.scalar_anchor, event_from.scalar_tag, scalar_value, event_from.scalar_length, event_from.scalar_plain_implicit, event_from.scalar_quoted_implicit, event_from.scalar_style)
+					Result :=  {YAML_FUNCTIONS}.yaml_scalar_event_initialize (event_to, event_from.scalar_anchor, event_from.scalar_tag, scalar_value, event_from.scalar_length, event_from.scalar_plain_implicit, event_from.scalar_quoted_implicit, event_from.scalar_style)
 				end
 			elseif event_from.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_SEQUENCE_START_EVENT then
-				Result := yaml.yaml_sequence_start_event_initialize (event_to, event_from.sequence_start_anchor, event_from.sequence_start_tag, event_from.sequence_start_implicit, event_from.sequence_start_style)
+				Result := {YAML_FUNCTIONS}.yaml_sequence_start_event_initialize (event_to, event_from.sequence_start_anchor, event_from.sequence_start_tag, event_from.sequence_start_implicit, event_from.sequence_start_style)
 			elseif event_from.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_SEQUENCE_END_EVENT then
-				Result := yaml.yaml_sequence_end_event_initialize (event_to)
+				Result := {YAML_FUNCTIONS}.yaml_sequence_end_event_initialize (event_to)
 			elseif event_from.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_MAPPING_START_EVENT then
-				Result := yaml.yaml_mapping_start_event_initialize (event_to, event_from.mapping_start_anchor, event_from.mapping_start_tag, event_from.mapping_start_implicit, event_from.mapping_start_style)
+				Result := {YAML_FUNCTIONS}.yaml_mapping_start_event_initialize (event_to, event_from.mapping_start_anchor, event_from.mapping_start_tag, event_from.mapping_start_implicit, event_from.mapping_start_style)
  			elseif event_from.type = {YAML_EVENT_TYPE_E_ENUM_API}.YAML_MAPPING_END_EVENT then
-            	Result := yaml.yaml_mapping_end_event_initialize(event_to)
+            	Result := {YAML_FUNCTIONS}.yaml_mapping_end_event_initialize(event_to)
             else
             	check event_from.type = {YAML_EVENT_TYPE_E_ENUM_API}.yaml_no_event end
             	Result := 1
@@ -435,7 +435,6 @@ feature {NONE} -- Initialization
 			end
 		end
 
-
 	is_canonical: BOOLEAN
 
 	is_unicode: BOOLEAN
@@ -443,12 +442,5 @@ feature {NONE} -- Initialization
 	BUFFER_SIZE: INTEGER = 65536
 
     MAX_EVENTS : INTEGER = 1024
-
-feature {NONE} -- Implementation
-
-	yaml: YAML_FUNCTIONS
-		once
-			create Result
-		end
 
 end

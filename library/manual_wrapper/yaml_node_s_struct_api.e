@@ -82,7 +82,7 @@ feature {ANY} -- Member Access
 		do
 			set_c_start_mark (item, a_value)
 		ensure
-			start_mark_set: start_mark = a_value
+			start_mark_set: start_mark.item = a_value
 		end
 
 	end_mark: YAML_MARK_S_STRUCT_API
@@ -101,7 +101,7 @@ feature {ANY} -- Member Access
 		do
 			set_c_end_mark (item, a_value)
 		ensure
-			end_mark_set: end_mark = a_value
+			end_mark_set: end_mark.item = a_value
 		end
 
 feature -- Node Data
