@@ -35,7 +35,7 @@ feature {NONE} -- Initialization
 				until
 					i > argument_count
 				loop
-					load_yaml (argument_array.at (i).to_string_32)
+					load_yaml (argument_array.at (i).to_string_8)
 					i := i + 1
 		    		count := count + 1
 		    	end
