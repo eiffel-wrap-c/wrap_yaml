@@ -1,0 +1,20 @@
+package wrap_yaml
+
+project
+	wrap_yaml = "library/wrap_yaml.ecf"
+
+note
+	title: Eiffel wrap_yaml
+	description: "[
+	wrap_yaml is an Eiffel binding of YAML C API using WrapC tool.
+	
+	LibYAML is a YAML parser and emitter library.
+	]"
+
+	tags: yaml, library , wrapc 
+	license: EFL
+	copyright: Copyright (c)  2020 Javier Velilla, Eiffel Software and others.
+	link[license]: "license" "https://github.com/eiffel-wrap-c/wrap_yaml/blob/master/license.lic"
+	link[github]: "project" https://github.com/eiffel-wrap-c/wrap_yaml
+
+end
